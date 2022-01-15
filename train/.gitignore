@@ -1,0 +1,10 @@
+*.pyc
+*.jpg
+*.png
+*.ckpt
+saved_models/*
+checkpoints/*
+classification_result/*
+result_log/*
+semiresult/*
+tresh/*
