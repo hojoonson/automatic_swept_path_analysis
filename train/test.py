@@ -1,4 +1,4 @@
-from utility import *
+from utility import utility, Car
 from collections import deque
 from dqn import DeepQNetwork
 import tensorflow as tf
@@ -7,10 +7,15 @@ from typing import List
 import random
 import glob
 import os
+import pygame
+import cv2
+import numpy as np
+from pygame.locals import HWSURFACE, DOUBLEBUF
+
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-flags = tf.app.flags
+flags = tf.compat.v1.flags
 flags.DEFINE_float('discount_rate', 0.99, 'Initial discount rate.')
 flags.DEFINE_integer('replay_memory_length', 30000,
                      'Number of replay memory episode.')
@@ -69,7 +74,7 @@ class Test:
         # Train our network using target and predicted Q values on each episode
         return mainDQN.update(X, y)
 
-    def get_copy_var_ops(self, *, dest_scope_name: str, src_scope_name: str) -> List[tf.Operation]:
+    def get_copy_var_ops(self, *, dest_scope_name: str, src_scope_name: str) -> List[tf.compat.v1.Operation]:
         """Creates TF operations that copy weights from `src_scope` to `dest_scope`
         Args:
             dest_scope_name (str): Destination weights (copy to)
@@ -80,10 +85,10 @@ class Test:
         # Copy variables src_scope to dest_scope
         op_holder = []
 
-        src_vars = tf.get_collection(
-            tf.GraphKeys.TRAINABLE_VARIABLES, scope=src_scope_name)
-        dest_vars = tf.get_collection(
-            tf.GraphKeys.TRAINABLE_VARIABLES, scope=dest_scope_name)
+        src_vars = tf.compat.v1.get_collection(
+            tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES, scope=src_scope_name)
+        dest_vars = tf.compat.v1.get_collection(
+            tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES, scope=dest_scope_name)
 
         for src_var, dest_var in zip(src_vars, dest_vars):
             op_holder.append(dest_var.assign(src_var.value()))
@@ -299,14 +304,14 @@ class Game:
         # logger.info(FLAGS.__flags)
         # store the previous observations in replay memory
         replay_buffer = deque(maxlen=FLAGS.replay_memory_length)
-        with tf.Session() as sess:
+        with tf.compat.v1.Session() as sess:
             mainDQN = DeepQNetwork(sess, FLAGS.model_name, test.input_size, test.output_size,
                                    learning_rate=FLAGS.learning_rate, frame_size=FLAGS.frame_size, name="main")
             targetDQN = DeepQNetwork(sess, FLAGS.model_name, test.input_size,
                                      test.output_size, frame_size=FLAGS.frame_size, name="target")
 
-            sess.run(tf.global_variables_initializer())
-            saver = tf.train.Saver(tf.global_variables())
+            sess.run(tf.compat.v1.global_variables_initializer())
+            saver = tf.compat.v1.train.Saver(tf.compat.v1.global_variables())
             saver.restore(sess, tf.train.latest_checkpoint(FLAGS.RL_model))
 
             # initial copy q_net -> target_net

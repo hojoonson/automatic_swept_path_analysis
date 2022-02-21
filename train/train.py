@@ -1,23 +1,27 @@
-from utility import *
+from utility import utility, Car
 from collections import deque
 from dqn import DeepQNetwork
 import tensorflow as tf
 import logging
 from typing import List
 import random
-import glob
 import os
-os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+import pygame
+import cv2
+import numpy as np
+from pygame.locals import HWSURFACE, DOUBLEBUF
 
-flags = tf.app.flags
+os.environ['CUDA_DEVICE_ORDER']='PCI_BUS_ID'
+os.environ['CUDA_VISIBLE_DEVICES']='0'
+
+flags = tf.compat.v1.flags
 flags.DEFINE_float('discount_rate', 0.99, 'Initial discount rate.')
 flags.DEFINE_integer('replay_memory_length', 3000, 'Number of replay memory episode.')
 flags.DEFINE_integer('target_update_count', 5, 'DQN Target Network update count.')
 flags.DEFINE_integer('max_episode_count', 15000, 'Number of maximum episodes.')
 flags.DEFINE_integer('batch_size', 32, 'Batch size. (Must divide evenly into the dataset sizes)')
 flags.DEFINE_integer('frame_size', 4, 'Frame size. (Stack env\'s observation T-n ~ T)')
-flags.DEFINE_string('model_name', 'Hojoon_Custom_CNN_forimage_v2', 'DeepLearning Network Model name (MLPv1, ConvNetv1)')
+flags.DEFINE_string('model_name', 'Custom_CNN_forimage_v2', 'DeepLearning Network Model name (MLPv1, ConvNetv1)')
 flags.DEFINE_float('learning_rate', 0.000001, 'Learning rate. ')
 flags.DEFINE_boolean('step_verbose', True, 'verbose every step count')
 flags.DEFINE_integer('step_verbose_count', 50, 'verbose step count')
@@ -33,16 +37,6 @@ class Train:
         self.output_size=output_size
         self.RAM_FIXED_LENGTH=input_size[0]
     def replay_train(self,mainDQN: DeepQNetwork, targetDQN: DeepQNetwork, train_batch: list) -> float:
-        """Trains `mainDQN` with target Q values given by `targetDQN`
-        Args:
-            mainDQN (DeepQNetwork``): Main DQN that will be trained
-            targetDQN (DeepQNetwork): Target DQN that will predict Q_target
-            train_batch (list): Minibatch of replay memory
-                Each element is (s, a, r, s', done)
-                [(state, action, reward, next_state, done), ...]
-        Returns:
-            float: After updating `mainDQN`, it returns a `loss`
-        """
         states = np.vstack([x[0] for x in train_batch])
         actions = np.array([x[1] for x in train_batch[:FLAGS.batch_size]])
         rewards = np.array([x[2] for x in train_batch[:FLAGS.batch_size]])
@@ -57,14 +51,7 @@ class Train:
         # Train our network using target and predicted Q values on each episode
         return mainDQN.update(X, y)
 
-    def get_copy_var_ops(self,*, dest_scope_name: str, src_scope_name: str) -> List[tf.Operation]:
-        """Creates TF operations that copy weights from `src_scope` to `dest_scope`
-        Args:
-            dest_scope_name (str): Destination weights (copy to)
-            src_scope_name (str): Source weight (copy from)
-        Returns:
-            List[tf.Operation]: Update operations are created and returned
-        """
+    def get_copy_var_ops(self,*, dest_scope_name: str, src_scope_name: str) -> List[tf.compat.v1.Operation]:
         # Copy variables src_scope to dest_scope
         op_holder = []
 
@@ -77,9 +64,10 @@ class Train:
             op_holder.append(dest_var.assign(src_var.value()))
 
         return op_holder
-    def step(self,action,car):
+
+    def step(self,action:int, car:Car) -> float:
         reward=0
-        if car.vehicle=="car":
+        if car.vehicle=='car':
             car_steering=36.91
             if action==0:
                 car.velocity.y= car.car_velocity
@@ -94,7 +82,7 @@ class Train:
                 car.steering = -car_steering
                 reward=0.1
 
-        elif car.vehicle=="spmt":
+        elif car.vehicle=='spmt':
             if car.rearvalid==0:
                 if action==0:
                     car.velocity.x=0
@@ -184,28 +172,28 @@ class Train:
 
 class Game:
     def __init__(self):
-        labels="scherule_trainlabels.txt"
-        label_path="./trainlabels/"+labels
+        labels='scherule_trainlabels.txt'
+        label_path='./data/train/trainlabels/'+labels
 
-        f = open(label_path,"r")
+        f = open(label_path,'r')
         pathdata = f.readlines()
         path_list=[]
         for element in pathdata:
-            if int(element.split(" ")[1])==1:
-                path_list+=[element.split(" ")[0]]
+            if int(element.split(' ')[1])==1:
+                path_list+=[element.split(' ')[0]]
         f.close()
         print(path_list)
         self.roadimage_path=path_list
 
-        labels="scherule_testlabels.txt"
-        label_path="./testlabels/"+labels
+        labels='scherule_testlabels.txt'
+        label_path='./data/test/testlabels/'+labels
 
-        f = open(label_path,"r")
+        f = open(label_path,'r')
         pathdata = f.readlines()
         path_list=[]
         for element in pathdata:
-            if int(element.split(" ")[1])==1:
-                path_list+=[element.split(" ")[0]]
+            if int(element.split(' ')[1])==1:
+                path_list+=[element.split(' ')[0]]
         f.close()
         print(path_list)
         self.roadimage_path+=path_list
@@ -215,7 +203,7 @@ class Game:
         self.map_updatecount=3
         self.util.imagefile=self.roadimage_path[0]                    
         pygame.init()
-        pygame.display.set_caption("Swept Path Analysis")
+        pygame.display.set_caption('Swept Path Analysis')
         self.startx=296.5
         self.starty=600
         self.startangle=0
@@ -224,7 +212,7 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height), HWSURFACE | DOUBLEBUF)
         self.clock = pygame.time.Clock()
         self.ticks = 1000
-        self.vehicle="spmt"
+        self.vehicle='spmt'
         self.scope_image_size=300
         self.scope_image_resize=64
         self.outputsize=9
@@ -240,33 +228,33 @@ class Game:
         stack_image = pygame.Surface((car.carwidth,car.carlength),pygame.SRCALPHA)
         stack_image.fill(gray)
         ppu = 1   
-        if car.vehicle=="car":
+        if car.vehicle=='car':
             train=Train(input_size=(self.scope_image_resize*self.scope_image_resize,),output_size=self.outputsize)
-        elif car.vehicle=="spmt":
+        elif car.vehicle=='spmt':
             train=Train(input_size=(self.scope_image_resize*self.scope_image_resize,),output_size=self.outputsize)
-        logger.info("FLAGS configure.")
+        logger.info('FLAGS configure.')
         #logger.info(FLAGS.__flags)
         # store the previous observations in replay memory
         replay_buffer = deque(maxlen=FLAGS.replay_memory_length)
-        lossresult_path = "Sheurle_6axle_2x5_Swept_Path_Analysis_byimage_output:"+str(self.outputsize) + "_f" + str(FLAGS.frame_size) +"_transport_"+str(self.vehicle)+"_model_" +FLAGS.model_name+"_"+FLAGS.checkpoint_path + "global_step"
+        lossresult_path = 'Sheurle_6axle_2x5_Swept_Path_Analysis_byimage_output:'+str(self.outputsize) + '_f' + str(FLAGS.frame_size) +'_transport_'+str(self.vehicle)+'_model_' +FLAGS.model_name+'_'+FLAGS.checkpoint_path + 'global_step'
         if not os.path.exists(lossresult_path):
             os.makedirs(lossresult_path)
-        lossresult=open("./"+lossresult_path+"/loss.txt","w+")
-        rewardresult_path = "Sheurle_6axle_2x5_Swept_Path_Analysis_byimage_output:"+str(self.outputsize) + "_f" + str(FLAGS.frame_size) +"_transport_"+str(self.vehicle)+"_model_" +FLAGS.model_name+"_"+FLAGS.checkpoint_path + "global_step"
+        lossresult=open('./'+lossresult_path+'/loss.txt','w+')
+        rewardresult_path = 'Sheurle_6axle_2x5_Swept_Path_Analysis_byimage_output:'+str(self.outputsize) + '_f' + str(FLAGS.frame_size) +'_transport_'+str(self.vehicle)+'_model_' +FLAGS.model_name+'_'+FLAGS.checkpoint_path + 'global_step'
         if not os.path.exists(rewardresult_path):
             os.makedirs(rewardresult_path)
-        rewardresult=open("./"+rewardresult_path+"/reward.txt","w+")
-        with tf.Session() as sess:
-            mainDQN = DeepQNetwork(sess, FLAGS.model_name, train.input_size, train.output_size, learning_rate=FLAGS.learning_rate, frame_size=FLAGS.frame_size, name="main")
-            targetDQN = DeepQNetwork(sess,FLAGS.model_name, train.input_size, train.output_size, frame_size=FLAGS.frame_size, name="target")
+        rewardresult=open('./'+rewardresult_path+'/reward.txt','w+')
+        with tf.compat.v1.Session() as sess:
+            mainDQN = DeepQNetwork(sess, FLAGS.model_name, train.input_size, train.output_size, learning_rate=FLAGS.learning_rate, frame_size=FLAGS.frame_size, name='main')
+            targetDQN = DeepQNetwork(sess,FLAGS.model_name, train.input_size, train.output_size, frame_size=FLAGS.frame_size, name='target')
 
             sess.run(tf.compat.v1.global_variables_initializer())
             saver = tf.compat.v1.train.Saver(tf.compat.v1.global_variables())
-            #saver.restore(sess, tf.train.latest_checkpoint("Swept_Path_Analysis_byimage_output_10_f4_transport_spmt_model_Hojoon_Custom_CNN_forimage_v2_checkpoint"))
+            #saver.restore(sess, tf.train.latest_checkpoint('Swept_Path_Analysis_byimage_output_10_f4_transport_spmt_model_Hojoon_Custom_CNN_forimage_v2_checkpoint'))
 
             # initial copy q_net -> target_net
-            copy_ops = train.get_copy_var_ops(dest_scope_name="target",
-                                        src_scope_name="main")
+            copy_ops = train.get_copy_var_ops(dest_scope_name='target',
+                                        src_scope_name='main')
             sess.run(copy_ops)
             
             global_step = 1
@@ -274,6 +262,7 @@ class Game:
             for episode in range(FLAGS.max_episode_count):
                 #set road image!
                 self.util.imagefile=self.roadimage_path[int(episode/self.map_updatecount)%len(self.roadimage_path)]
+                print(self.util.imagefile)
                 self.util.image=cv2.imread(self.util.imagefile)
                 self.util.edge=cv2.Laplacian(self.util.image,cv2.CV_8U)
                 self.util.edge=cv2.cvtColor(self.util.edge,cv2.COLOR_BGR2GRAY)
@@ -314,28 +303,28 @@ class Game:
                 rear_count=0
                 while not self.done:
                     #dt = self.clock.get_time() / 1000
-                    if self.vehicle=="car":
+                    if self.vehicle=='car':
                         dt = 0.03
-                    elif self.vehicle=="spmt":
+                    elif self.vehicle=='spmt':
                         dt = 0.04
                     if np.random.rand() < e:
                         # random action
                         action = train.action_sample(car.vehicle,self.outputsize)
-                        #print("random action",action)
+                        #print('random action',action)
                     else:
                         # Get new state and reward from environment
                         action = np.argmax(mainDQN.predict(state))
-                        #print("Q-func action",action)
+                        #print('Q-func action',action)
                     
 
                     reward = train.step(action,car)
                     nextvalid,rear_count=car.update(dt,self.util.image,type=self.vehicle,rear_count=rear_count)
-                    """
+                    '''
                     front_lidar=self.util.front_lidar(car.position,car.angle,car.carlength,100)
                     front_lidar=np.array(front_lidar[0])
                     carfront=np.array([car.position[0]-car.carlength/2*math.sin(radians(car.angle)),car.position[1]-car.carlength/2*math.cos(radians(car.angle))])
                     reward-=(0.5-np.linalg.norm(front_lidar-carfront)*0.5/100)
-                    """
+                    '''
                     event=pygame.event.get()
             
                     if len(event)!=0:
@@ -344,13 +333,13 @@ class Game:
                                 nextvalid=3
                     same_check_list.append(np.array(car.position))
                     if nextvalid==0:
-                        #print("Collision!!!")
+                        #print('Collision!!!')
                         reward=-4.0
                     if nextvalid==2:
-                        print("Finish the Analysis!!!")
+                        print('Finish the Analysis!!!')
                         reward=0.4
                     if nextvalid==3:
-                        print("force quit to next episode")
+                        print('force quit to next episode')
                     # Current State by Lidar Sensor
                     next_state=self.util.get_instant_image(car.position,car.angle,car.carwidth,car.carlength,self.scope_image_size,self.scope_image_resize)
                     next_state=next_state.flatten()
@@ -366,9 +355,9 @@ class Game:
                         loss, _ = train.replay_train(mainDQN, targetDQN, minibatch)
                         model_loss = loss
                         if FLAGS.step_verbose and step_count % FLAGS.step_verbose_count == 0:
-                            print(" - step_count : "+str(step_count)+", reward: "+str(e_reward)+" ,loss: "+str(loss))
+                            print(' - step_count : '+str(step_count)+', reward: '+str(e_reward)+' ,loss: '+str(loss))
                         if global_step % 100 == 0:
-                            lossresult.write("global_step:"+str(global_step)+ " loss: "+str(loss)+"\n")
+                            lossresult.write('global_step:'+str(global_step)+ ' loss: '+str(loss)+'\n')
                     if step_count % FLAGS.target_update_count == 0:
                         sess.run(copy_ops)
 
@@ -377,20 +366,20 @@ class Game:
                     step_count += 1
 
                     if len(same_check_list)==50 and len(np.unique(same_check_list))==2:
-                        rewardresult.write("episode:"+str(episode)+ " reward: "+str(e_reward)+"\n")
+                        rewardresult.write('episode:'+str(episode)+ ' reward: '+str(e_reward)+'\n')
                         self.done=True
                     if (nextvalid!=1 and nextvalid!=0) or (step_count!=0 and step_count%1000==0):
-                        rewardresult.write("episode:"+str(episode)+ " reward: "+str(e_reward)+"\n")
+                        rewardresult.write('episode:'+str(episode)+ ' reward: '+str(e_reward)+'\n')
                         self.done=True
 
                     # save model checkpoint
                     if global_step % FLAGS.save_step_count == 0:
-                        checkpoint_path = "Sheurle_6axle_2x5_Swept_Path_Analysis_byimage_output:"+str(self.outputsize) + "_f" + str(FLAGS.frame_size) +"_transport_"+str(self.vehicle)+"_model_" +FLAGS.model_name+"_"+FLAGS.checkpoint_path + "global_step"
+                        checkpoint_path = 'Sheurle_6axle_2x5_Swept_Path_Analysis_byimage_output:'+str(self.outputsize) + '_f' + str(FLAGS.frame_size) +'_transport_'+str(self.vehicle)+'_model_' +FLAGS.model_name+'_'+FLAGS.checkpoint_path + 'global_step'
                         if not os.path.exists(checkpoint_path):
                             os.makedirs(checkpoint_path)
 
                         saver.save(sess, checkpoint_path, global_step=global_step)
-                        logger.info("save model for global_step: "+str(global_step))
+                        logger.info('save model for global_step: '+str(global_step))
 
                     # Drawing
                     
@@ -403,14 +392,14 @@ class Game:
                     #for element in stack_list:
                     #    self.screen.blit(element[0], element[1] * ppu - (element[0].get_rect().width / 2, element[0].get_rect().height / 2))
                     #for lidar sensor
-                    """
+                    '''
                     pygame.draw.aaline(self.screen, (0,0,255), [car.position[0],car.position[1]], [front_lidar[0],front_lidar[1]], 5)
                     pygame.draw.circle(self.screen,(0,255,0),[int(front_lidar[0]),int(front_lidar[1])],5)
                     pygame.draw.circle(self.screen,(0,255,0),[int(carfront[0]),int(carfront[1])],5)
-                    """
-                    """writing episode"""
+                    '''
+                    '''writing episode'''
                     fontObj = pygame.font.Font('./font/times-new-roman.ttf', 30)
-                    textSurfaceObj = fontObj.render("Episode "+str(episode), True, (255,255,255), (0,0,0))
+                    textSurfaceObj = fontObj.render('Episode '+str(episode), True, (255,255,255), (0,0,0))
                     textRectObj = textSurfaceObj.get_rect()
                     textRectObj.center = (100,30)
                     self.screen.blit(textSurfaceObj, textRectObj) 

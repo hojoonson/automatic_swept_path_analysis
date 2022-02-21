@@ -46,15 +46,15 @@ class DeepQNetwork:
                 tf.float32, X_shape, name="input_x")
 
             models = {
-                "Hojoon_Custom_LSTMv0": Hojoon_Custom_LSTMv0,
-                "Hojoon_Custom_CNNv0": Hojoon_Custom_CNNv0,
-                "Hojoon_Custom_CNNv1": Hojoon_Custom_CNNv1,
-                "Hojoon_Custom_CNNv2": Hojoon_Custom_CNNv2,
-                "Hojoon_Custom_CNN_forimage_v0": Hojoon_Custom_CNN_forimage_v0,
-                "Hojoon_Custom_CNN_forimage_v1": Hojoon_Custom_CNN_forimage_v1,
-                "Hojoon_Custom_CNN_forimage_v2": Hojoon_Custom_CNN_forimage_v2,
-                "Hojoon_Custom_C_LSTMv0": Hojoon_Custom_C_LSTMv0,
-                "Hojoon_Custom_MLPv0": Hojoon_Custom_MLPv0,
+                "Custom_LSTMv0": Custom_LSTMv0,
+                "Custom_CNNv0": Custom_CNNv0,
+                "Custom_CNNv1": Custom_CNNv1,
+                "Custom_CNNv2": Custom_CNNv2,
+                "Custom_CNN_forimage_v0": Custom_CNN_forimage_v0,
+                "Custom_CNN_forimage_v1": Custom_CNN_forimage_v1,
+                "Custom_CNN_forimage_v2": Custom_CNN_forimage_v2,
+                "Custom_C_LSTMv0": Custom_C_LSTMv0,
+                "Custom_MLPv0": Custom_MLPv0,
                 "MLPv1": MLPv1,
                 "ConvNetv1": ConvNetv1,
                 "ConvNetv2": ConvNetv2

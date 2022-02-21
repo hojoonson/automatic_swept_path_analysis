@@ -7,4 +7,4 @@ checkpoints/*
 classification_result/*
 result_log/*
 semiresult/*
-tresh/*
+legacy/*

@@ -21,7 +21,7 @@ flags.DEFINE_integer(
     'batch_size', 128, 'Batch size. (Must divide evenly into the dataset sizes)')
 flags.DEFINE_integer(
     'frame_size', 4, 'Frame size. (Stack env\'s observation T-n ~ T)')
-flags.DEFINE_string('model_name', 'Hojoon_Custom_CNN_forimage_v2',
+flags.DEFINE_string('model_name', 'Custom_CNN_forimage_v2',
                     'DeepLearning Network Model name (MLPv1, ConvNetv1)')
 flags.DEFINE_float('learning_rate', 0.000001, 'Learning rate. ')
 flags.DEFINE_boolean('step_verbose', True, 'verbose every step count')

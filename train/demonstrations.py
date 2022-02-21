@@ -1,4 +1,4 @@
-from utility import *
+from utility import utility, Car
 from collections import deque
 from dqn import DeepQNetwork
 import tensorflow as tf
@@ -7,7 +7,11 @@ from typing import List
 import random
 import glob
 import os
+import pygame
+import cv2
+import numpy as np
 import tqdm
+from pygame.locals import HWSURFACE, DOUBLEBUF
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
@@ -22,14 +26,14 @@ flags.DEFINE_integer(
     'batch_size', 128, 'Batch size. (Must divide evenly into the dataset sizes)')
 flags.DEFINE_integer(
     'frame_size', 4, 'Frame size. (Stack env\'s observation T-n ~ T)')
-flags.DEFINE_string('model_name', 'Hojoon_Custom_CNN_forimage_v2',
+flags.DEFINE_string('model_name', 'Custom_CNN_forimage_v2',
                     'DeepLearning Network Model name (MLPv1, ConvNetv1)')
 flags.DEFINE_float('learning_rate', 0.000001, 'Learning rate. ')
 flags.DEFINE_boolean('step_verbose', True, 'verbose every step count')
 flags.DEFINE_integer('step_verbose_count', 50, 'verbose step count')
 flags.DEFINE_integer('save_step_count', 2000, 'model save step count')
 flags.DEFINE_string('checkpoint_path', 'checkpoint/',
-                    'model save checkpoint_path (prefix is gym_env)')
+                    'model save checkpoint_path')
 flags.DEFINE_integer('pretrain_iteration', 100000, 'pretrain iteration')
 FLAGS = flags.FLAGS
 logging.basicConfig(level=logging.INFO)
@@ -195,7 +199,7 @@ class Train:
 
 class Game:
     def __init__(self):
-        self.roadimage_path = glob.glob("./trainimages/*.png")
+        self.roadimage_path = glob.glob("./data/train/trainimages/*.png")
         random.shuffle(self.roadimage_path)
         self.util = utility()
         self.random_candidate = 2
@@ -434,7 +438,7 @@ class Game:
                 # print(time.time()-timemarker,len(result))
                 # self.clock.tick(self.ticks)
                 global_step += 1
-        with tf.Session() as sess:
+        with tf.compat.v1.Session() as sess:
             mainDQN = DeepQNetwork(sess, FLAGS.model_name, train.input_size, train.output_size,
                                    learning_rate=FLAGS.learning_rate, frame_size=FLAGS.frame_size, name="main")
             targetDQN = DeepQNetwork(sess, FLAGS.model_name, train.input_size,
@@ -465,8 +469,7 @@ class Game:
                     if not os.path.exists(checkpoint_path):
                         os.makedirs(checkpoint_path)
                     saver.save(sess, checkpoint_path, global_step=global_step)
-                    logger.info("save model for global_step: " +
-                                str(global_step))
+                    logger.info(f'save model for global_step: {global_step}')
 
 
 if __name__ == '__main__':

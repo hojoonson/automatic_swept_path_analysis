@@ -1,23 +1,19 @@
-import os
 import pygame
 import math
 import cv2
-import time
 import numpy as np
-from scipy.misc import bytescale
 from sklearn.cluster import DBSCAN
-from skimage import transform
-from math import tan, radians, degrees, copysign
+from skimage.util import img_as_ubyte
+from math import tan, radians, degrees
 from pygame.math import Vector2
+from copy import deepcopy
 import glob
-from pygame.locals import *
-from functools import reduce
 import operator
 
 
 class utility():
     def __init__(self):
-        self.imagefile = glob.glob("./trainimages/*.png")[0]
+        self.imagefile = glob.glob('./data/train/trainimages/*.png')[0]
         self.image = cv2.imread(self.imagefile)
         self.edge = cv2.Laplacian(self.image, cv2.CV_8U)
         self.edge = cv2.cvtColor(self.edge, cv2.COLOR_BGR2GRAY)
@@ -33,22 +29,22 @@ class utility():
             car.velocity.y = 0
 
         if pressed[pygame.K_RIGHT]:
-            if car.vehicle == "car":
+            if car.vehicle == 'car':
                 car.steering = 30
-            elif car.vehicle == "spmt":
+            elif car.vehicle == 'spmt':
                 car.velocity.x = -car.car_velocity
         elif pressed[pygame.K_LEFT]:
-            if car.vehicle == "car":
+            if car.vehicle == 'car':
                 car.steering = -30
-            elif car.vehicle == "spmt":
+            elif car.vehicle == 'spmt':
                 car.velocity.x = car.car_velocity
         else:
-            if car.vehicle == "car":
+            if car.vehicle == 'car':
                 car.steering = 0
-            elif car.vehicle == "spmt":
+            elif car.vehicle == 'spmt':
                 car.velocity.x = 0
 
-        if car.vehicle == "spmt":
+        if car.vehicle == 'spmt':
             if pressed[pygame.K_q]:
                 car.steering = 1
             elif pressed[pygame.K_e]:
@@ -59,11 +55,10 @@ class utility():
                            min(car.steering, car.max_steering))
 
     def rotate(self, origin, point, angle):
-        """
+        '''
         Rotate a point counterclockwise by a given angle around a given origin.
-
         The angle should be given in radians.
-        """
+        '''
         ox, oy = origin
         px, py = point
 
@@ -97,7 +92,7 @@ class utility():
                         300-int(image_size/2):300+int(image_size/2)]
         scope = cv2.resize(scope, (image_resize, image_resize))
         scope = cv2.cvtColor(scope, cv2.COLOR_BGR2GRAY)
-        cv2.imshow("scope_image", scope)
+        cv2.imshow('scope_image', scope)
         cv2.waitKey(1) & 0xFF
         return scope
 
@@ -122,7 +117,7 @@ class utility():
             lineimage = cv2.line(lineimage, (int(position[0]), int(
                 position[1])), (int(newpoint[0]), int(newpoint[1])), 255, 2)
         validindex = np.array(validindex)
-        contactpoint = bytescale(np.multiply(self.edge, lineimage))
+        contactpoint = img_as_ubyte(np.multiply(self.edge, lineimage))
         validindex = np.vstack([validindex, np.argwhere(contactpoint)])
         clustering = DBSCAN(eps=3, min_samples=2).fit(validindex)
         cluster_dict = {}
@@ -181,7 +176,7 @@ class utility():
             lineimage = cv2.line(lineimage, (int(position[0]), int(
                 position[1])), (int(newpoint[0]), int(newpoint[1])), 255, 2)
         validindex = np.array(validindex)
-        contactpoint = bytescale(np.multiply(self.edge, lineimage))
+        contactpoint = img_as_ubyte(np.multiply(self.edge, lineimage))
         validindex = np.vstack([validindex, np.argwhere(contactpoint)])
         clustering = DBSCAN(eps=3, min_samples=2).fit(validindex)
         cluster_dict = {}
@@ -228,20 +223,12 @@ class utility():
     def check_collision(self, position, angle, carwidth, carlength):
         x1, x2, x3, x4, y1, y2, y3, y4 = self.find_carpoints(
             position, angle, carwidth, carlength)
-        x1 = int(x1)
-        x2 = int(x2)
-        x3 = int(x3)
-        x4 = int(x4)
-        y1 = int(y1)
-        y2 = int(y2)
-        y3 = int(y3)
-        y4 = int(y4)
-        cloneimage = np.array(self.image)
+        cloneimage = deepcopy(self.image)
         # draw car rectangle
-        cloneimage = cv2.line(cloneimage, (x1, y1), (x2, y2), (255, 255, 255))
-        cloneimage = cv2.line(cloneimage, (x1, y1), (x3, y3), (255, 255, 255))
-        cloneimage = cv2.line(cloneimage, (x4, y4), (x2, y2), (255, 255, 255))
-        cloneimage = cv2.line(cloneimage, (x4, y4), (x3, y3), (255, 255, 255))
+        cv2.line(cloneimage, (int(x1), int(y1)), (int(x2), int(y2)), (255, 255, 255))
+        cv2.line(cloneimage, (int(x1), int(y1)), (int(x3), int(y3)), (255, 255, 255))
+        cv2.line(cloneimage, (int(x4), int(y4)), (int(x2), int(y2)), (255, 255, 255))
+        cv2.line(cloneimage, (int(x4), int(y4)), (int(x3), int(y3)), (255, 255, 255))
         # check sameness
         if np.array_equal(self.image, cloneimage):
             return False
@@ -251,6 +238,9 @@ class utility():
     def find_carpoints(self, position, angle, carwidth, carlength):
         # convert to radian
         angle = radians(angle)
+        # apply offset
+        carwidth -= 0.5
+        carlength -= 0.5
         # lefttop
         x1 = position[0]-carwidth/2*math.cos(angle)-carlength/2*math.sin(angle)
         y1 = position[1]+carwidth/2*math.sin(angle)-carlength/2*math.cos(angle)
@@ -271,16 +261,15 @@ class Car:
     def __init__(self, x, y, angle, vehicle, max_steering=30):
         # from front of car
         # car spec
-        if vehicle == "car":
-            """
-            #Mack Trucks TerraPro Low Entry 4x2 LEU612
-            self.scale=5
-            self.carwidth=7.950*self.scale
-            self.carlength=27.054*self.scale
-            self.curb_to_curb_r=24.000*self.scale
-            self.frontwheel_ratio=6.054/(self.carlength/self.scale)
-            self.rearwheel_ratio=(6.054+13.083)/(self.carlength/self.scale)
-            """
+        if vehicle == 'car':
+            # Mack Trucks TerraPro Low Entry 4x2 LEU612
+            # self.scale=5
+            # self.carwidth=7.950*self.scale
+            # self.carlength=27.054*self.scale
+            # self.curb_to_curb_r=24.000*self.scale
+            # self.frontwheel_ratio=6.054/(self.carlength/self.scale)
+            # self.rearwheel_ratio=(6.054+13.083)/(self.carlength/self.scale)
+            
 
             # Pantechnicon_Removals_Van
             self.scale = 5.6
@@ -290,11 +279,12 @@ class Car:
             self.frontwheel_ratio = 4.921/(self.carlength/self.scale)
             self.rearwheel_ratio = (4.921+21.982)/(self.carlength/self.scale)
 
-        elif vehicle == "spmt":
+        elif vehicle == 'spmt':
             # shceluerle
             self.scale = 9.4
             self.carwidth = 2.430*self.scale*4
             self.carlength = 8.730*self.scale*2
+            
         self.car_velocity = -50
         self.vehicle = vehicle
         self.position = Vector2(x, y)
@@ -308,7 +298,7 @@ class Car:
     def update(self, dt, image, type, rear_count):
         util = utility()
         util.image = image
-        if type == "car":
+        if type == 'car':
             if self.steering:
                 l_dot = self.carlength * \
                     (self.rearwheel_ratio-self.frontwheel_ratio)
@@ -338,7 +328,7 @@ class Car:
                 turning_velocity.rotate(-self.angle) * dt
             newangle = self.angle + degrees(angular_velocity) * dt
 
-        elif type == "spmt":
+        elif type == 'spmt':
             newposition = self.position + \
                 self.velocity.rotate(-self.angle) * dt
             newangle = self.angle+self.steering
