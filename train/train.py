@@ -1,3 +1,4 @@
+from genericpath import exists
 from utility import utility, Car
 from collections import deque
 from dqn import DeepQNetwork
@@ -68,19 +69,51 @@ class Train:
     def step(self,action:int, car:Car) -> float:
         reward=0
         if car.vehicle=='car':
-            car_steering=36.91
-            if action==0:
-                car.velocity.y= car.car_velocity
-                car.steering = 0
-                reward=0.1
-            elif action==1:
-                car.velocity.y = car.car_velocity
-                car.steering = car_steering
-                reward=0.1
-            elif action==2:
-                car.velocity.y= car.car_velocity
-                car.steering = -car_steering
-                reward=0.1
+            car_steering=car.car_steering
+            if car.rearvalid == 0:
+                if action == 0:
+                    car.velocity.y = car.car_velocity
+                    car.steering = 0
+                    reward = 0.1
+                elif action == 1:
+                    car.velocity.y = car.car_velocity
+                    car.steering = car_steering
+                    reward = 0.1
+                elif action == 2:
+                    car.velocity.y = car.car_velocity
+                    car.steering = -car_steering
+                    reward = 0.1
+                elif action == 3:
+                    reward = -0.2
+                elif action == 4:
+                    reward = -0.2
+                elif action == 5:
+                    reward = -0.2
+            if car.rearvalid == 1:
+                if action == 0:
+                    car.velocity.y = car.car_velocity
+                    car.steering = 0
+                    reward = -0.05
+                elif action == 1:
+                    car.velocity.y = car.car_velocity
+                    car.steering = car_steering
+                    reward = -0.05
+                elif action == 2:
+                    car.velocity.y = car.car_velocity
+                    car.steering = -car_steering
+                    reward = -0.05
+                elif action == 3:
+                    car.velocity.y = -car.car_velocity
+                    car.steering = 0
+                    reward = -0.1
+                elif action == 4:
+                    car.velocity.y = -car.car_velocity
+                    car.steering = car_steering
+                    reward = 0.1
+                elif action == 5:
+                    car.velocity.y = -car.car_velocity
+                    car.steering = -car_steering
+                    reward = 0.1
 
         elif car.vehicle=='spmt':
             if car.rearvalid==0:
@@ -172,9 +205,9 @@ class Train:
 
 class Game:
     def __init__(self):
-        labels='scherule_trainlabels.txt'
-        label_path='./data/train/trainlabels/'+labels
-
+        self.vehicle_name = 'Mack_Trucks_TerraPro'
+        self.vehicle_type='car'
+        label_path=f'./data/train/trainlabels/{self.vehicle_name}_trainlabels.txt'
         f = open(label_path,'r')
         pathdata = f.readlines()
         path_list=[]
@@ -182,11 +215,8 @@ class Game:
             if int(element.split(' ')[1])==1:
                 path_list+=[element.split(' ')[0]]
         f.close()
-        print(path_list)
         self.roadimage_path=path_list
-
-        labels='scherule_testlabels.txt'
-        label_path='./data/test/testlabels/'+labels
+        label_path=f'./data/test/testlabels/{self.vehicle_name}_testlabels.txt'
 
         f = open(label_path,'r')
         pathdata = f.readlines()
@@ -195,9 +225,8 @@ class Game:
             if int(element.split(' ')[1])==1:
                 path_list+=[element.split(' ')[0]]
         f.close()
-        print(path_list)
         self.roadimage_path+=path_list
-
+        print(self.roadimage_path)
         self.util=utility()
         self.random_candidate=3
         self.map_updatecount=3
@@ -212,7 +241,6 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height), HWSURFACE | DOUBLEBUF)
         self.clock = pygame.time.Clock()
         self.ticks = 1000
-        self.vehicle='spmt'
         self.scope_image_size=300
         self.scope_image_resize=64
         self.outputsize=9
@@ -220,7 +248,7 @@ class Game:
         #car : 3
     
     def run(self):
-        car = Car(x=self.startx,y=self.starty,angle=self.startangle,vehicle=self.vehicle)
+        car = Car(x=self.startx,y=self.starty,angle=self.startangle,vehicle_type=self.vehicle_type, vehicle_name=self.vehicle_name)
         red = (255, 0, 0)
         gray = (100,100,100)
         car_image = pygame.Surface((car.carwidth,car.carlength),pygame.SRCALPHA)
@@ -236,13 +264,12 @@ class Game:
         #logger.info(FLAGS.__flags)
         # store the previous observations in replay memory
         replay_buffer = deque(maxlen=FLAGS.replay_memory_length)
-        lossresult_path = 'Sheurle_6axle_2x5_Swept_Path_Analysis_byimage_output:'+str(self.outputsize) + '_f' + str(FLAGS.frame_size) +'_transport_'+str(self.vehicle)+'_model_' +FLAGS.model_name+'_'+FLAGS.checkpoint_path + 'global_step'
-        if not os.path.exists(lossresult_path):
-            os.makedirs(lossresult_path)
+        os.makedirs('train_result', exist_ok=True)
+        lossresult_path = f'./train_result/{self.vehicle_name}_output:{self.outputsize}_f{FLAGS.frame_size}_transport_{self.vehicle_type}_model_{FLAGS.model_name}_{FLAGS.checkpoint_path}_global_step'
+        os.makedirs(lossresult_path, exist_ok=True)
         lossresult=open('./'+lossresult_path+'/loss.txt','w+')
-        rewardresult_path = 'Sheurle_6axle_2x5_Swept_Path_Analysis_byimage_output:'+str(self.outputsize) + '_f' + str(FLAGS.frame_size) +'_transport_'+str(self.vehicle)+'_model_' +FLAGS.model_name+'_'+FLAGS.checkpoint_path + 'global_step'
-        if not os.path.exists(rewardresult_path):
-            os.makedirs(rewardresult_path)
+        rewardresult_path = f'./train_result/{self.vehicle_name}_output:{self.outputsize}_f{FLAGS.frame_size}_transport_{self.vehicle_type}_model_{FLAGS.model_name}_{FLAGS.checkpoint_path}_global_step'
+        os.makedirs(rewardresult_path, exist_ok=True)
         rewardresult=open('./'+rewardresult_path+'/reward.txt','w+')
         with tf.compat.v1.Session() as sess:
             mainDQN = DeepQNetwork(sess, FLAGS.model_name, train.input_size, train.output_size, learning_rate=FLAGS.learning_rate, frame_size=FLAGS.frame_size, name='main')
@@ -279,9 +306,9 @@ class Game:
                     randomstate=random.sample(stack_list,self.random_candidate)
                     randomstate+=[[0,[self.startx,self.starty],self.startangle]]
                     random_before_state=random.sample(randomstate,1)
-                    car = Car(x=random_before_state[0][1][0],y=random_before_state[0][1][1],angle=random_before_state[0][2],vehicle=self.vehicle)
+                    car = Car(x=random_before_state[0][1][0], y=random_before_state[0][1][1], angle=random_before_state[0][2], vehicle_type=self.vehicle_type, vehicle_name=self.vehicle_name)
                 else:
-                    car = Car(x=self.startx,y=self.starty,angle=self.startangle,vehicle=self.vehicle)
+                    car = Car(x=self.startx, y=self.starty, angle=self.startangle, vehicle_type=self.vehicle_type, vehicle_name=self.vehicle_name)
                 nextvalid=1
                 stack_list=[[pygame.transform.rotate(stack_image,car.angle),car.position,car.angle]]
                 self.done = False
@@ -303,9 +330,9 @@ class Game:
                 rear_count=0
                 while not self.done:
                     #dt = self.clock.get_time() / 1000
-                    if self.vehicle=='car':
+                    if self.vehicle_type=='car':
                         dt = 0.03
-                    elif self.vehicle=='spmt':
+                    elif self.vehicle_type=='spmt':
                         dt = 0.04
                     if np.random.rand() < e:
                         # random action
@@ -318,13 +345,7 @@ class Game:
                     
 
                     reward = train.step(action,car)
-                    nextvalid,rear_count=car.update(dt,self.util.image,type=self.vehicle,rear_count=rear_count)
-                    '''
-                    front_lidar=self.util.front_lidar(car.position,car.angle,car.carlength,100)
-                    front_lidar=np.array(front_lidar[0])
-                    carfront=np.array([car.position[0]-car.carlength/2*math.sin(radians(car.angle)),car.position[1]-car.carlength/2*math.cos(radians(car.angle))])
-                    reward-=(0.5-np.linalg.norm(front_lidar-carfront)*0.5/100)
-                    '''
+                    nextvalid,rear_count=car.update(dt,self.util.image,type=self.vehicle_type,rear_count=rear_count)
                     event=pygame.event.get()
             
                     if len(event)!=0:
@@ -374,30 +395,16 @@ class Game:
 
                     # save model checkpoint
                     if global_step % FLAGS.save_step_count == 0:
-                        checkpoint_path = 'Sheurle_6axle_2x5_Swept_Path_Analysis_byimage_output:'+str(self.outputsize) + '_f' + str(FLAGS.frame_size) +'_transport_'+str(self.vehicle)+'_model_' +FLAGS.model_name+'_'+FLAGS.checkpoint_path + 'global_step'
-                        if not os.path.exists(checkpoint_path):
-                            os.makedirs(checkpoint_path)
-
+                        checkpoint_path = f'./train_result/{self.vehicle_name}_output:{self.outputsize}_f{FLAGS.frame_size}_transport_{self.vehicle_type}_model_{FLAGS.model_name}_{FLAGS.checkpoint_path}_global_step'
+                        os.makedirs(checkpoint_path, exist_ok=True)
                         saver.save(sess, checkpoint_path, global_step=global_step)
                         logger.info('save model for global_step: '+str(global_step))
 
                     # Drawing
-                    
                     self.screen.fill((0, 0, 0))
                     rotated = pygame.transform.rotate(car_image, car.angle)
                     rect = rotated.get_rect()
                     self.screen.blit(road_image,(0,0))
-                    #if [pygame.transform.rotate(stack_image,car.angle),car.position,car.angle] not in stack_list:
-                    #    stack_list+=[[pygame.transform.rotate(stack_image,car.angle),car.position,car.angle]]
-                    #for element in stack_list:
-                    #    self.screen.blit(element[0], element[1] * ppu - (element[0].get_rect().width / 2, element[0].get_rect().height / 2))
-                    #for lidar sensor
-                    '''
-                    pygame.draw.aaline(self.screen, (0,0,255), [car.position[0],car.position[1]], [front_lidar[0],front_lidar[1]], 5)
-                    pygame.draw.circle(self.screen,(0,255,0),[int(front_lidar[0]),int(front_lidar[1])],5)
-                    pygame.draw.circle(self.screen,(0,255,0),[int(carfront[0]),int(carfront[1])],5)
-                    '''
-                    '''writing episode'''
                     fontObj = pygame.font.Font('./font/times-new-roman.ttf', 30)
                     textSurfaceObj = fontObj.render('Episode '+str(episode), True, (255,255,255), (0,0,0))
                     textRectObj = textSurfaceObj.get_rect()

@@ -258,35 +258,40 @@ class utility():
 
 
 class Car:
-    def __init__(self, x, y, angle, vehicle, max_steering=30):
+    def __init__(self, x, y, angle, vehicle_type, vehicle_name, max_steering=30):
         # from front of car
         # car spec
-        if vehicle == 'car':
-            # Mack Trucks TerraPro Low Entry 4x2 LEU612
-            # self.scale=5
-            # self.carwidth=7.950*self.scale
-            # self.carlength=27.054*self.scale
-            # self.curb_to_curb_r=24.000*self.scale
-            # self.frontwheel_ratio=6.054/(self.carlength/self.scale)
-            # self.rearwheel_ratio=(6.054+13.083)/(self.carlength/self.scale)
-            
+        if vehicle_type == 'car':
+            if vehicle_name == 'Mack_Trucks_TerraPro':
+                self.car_steering  = 39.16
+                self.scale=5
+                self.carwidth=7.950*self.scale
+                self.carlength=27.054*self.scale
+                self.curb_to_curb_r=24.000*self.scale
+                self.frontwheel_ratio=6.054/(self.carlength/self.scale)
+                self.rearwheel_ratio=(6.054+13.083)/(self.carlength/self.scale)
+            elif vehicle_name == 'Pantechnicon_Removals_Van':
+                self.car_steering  = 36.91
+                self.scale = 5.6
+                self.carwidth = 8.202*self.scale
+                self.carlength = 36.089*self.scale
+                self.curb_to_curb_r = 40.026*self.scale
+                self.frontwheel_ratio = 4.921/(self.carlength/self.scale)
+                self.rearwheel_ratio = (4.921+21.982)/(self.carlength/self.scale)
 
-            # Pantechnicon_Removals_Van
-            self.scale = 5.6
-            self.carwidth = 8.202*self.scale
-            self.carlength = 36.089*self.scale
-            self.curb_to_curb_r = 40.026*self.scale
-            self.frontwheel_ratio = 4.921/(self.carlength/self.scale)
-            self.rearwheel_ratio = (4.921+21.982)/(self.carlength/self.scale)
+        elif vehicle_type == 'spmt':
+            if vehicle_name == 'Scherule':
+                self.scale = 9.4
+                self.carwidth = 2.430*self.scale*4
+                self.carlength = 7.330*self.scale*2
+            elif vehicle_name == 'Kamag':
+                self.scale = 9.4
+                self.carwidth = 2.430*self.scale*3
+                self.carlength = 7.000*self.scale*3
 
-        elif vehicle == 'spmt':
-            # shceluerle
-            self.scale = 9.4
-            self.carwidth = 2.430*self.scale*4
-            self.carlength = 8.730*self.scale*2
             
         self.car_velocity = -50
-        self.vehicle = vehicle
+        self.vehicle = vehicle_type
         self.position = Vector2(x, y)
         self.velocity = Vector2(0.0, 0.0)
         self.angle = angle

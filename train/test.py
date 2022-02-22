@@ -12,8 +12,8 @@ import cv2
 import numpy as np
 from pygame.locals import HWSURFACE, DOUBLEBUF
 
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 flags = tf.compat.v1.flags
 flags.DEFINE_float('discount_rate', 0.99, 'Initial discount rate.')
@@ -49,7 +49,7 @@ class Test:
         self.RAM_FIXED_LENGTH = input_size[0]
 
     def replay_train(self, mainDQN: DeepQNetwork, targetDQN: DeepQNetwork, train_batch: list) -> float:
-        """Trains `mainDQN` with target Q values given by `targetDQN`
+        '''Trains `mainDQN` with target Q values given by `targetDQN`
         Args:
             mainDQN (DeepQNetwork``): Main DQN that will be trained
             targetDQN (DeepQNetwork): Target DQN that will predict Q_target
@@ -58,7 +58,7 @@ class Test:
                 [(state, action, reward, next_state, done), ...]
         Returns:
             float: After updating `mainDQN`, it returns a `loss`
-        """
+        '''
         states = np.vstack([x[0] for x in train_batch])
         actions = np.array([x[1] for x in train_batch[:FLAGS.batch_size]])
         rewards = np.array([x[2] for x in train_batch[:FLAGS.batch_size]])
@@ -75,13 +75,13 @@ class Test:
         return mainDQN.update(X, y)
 
     def get_copy_var_ops(self, *, dest_scope_name: str, src_scope_name: str) -> List[tf.compat.v1.Operation]:
-        """Creates TF operations that copy weights from `src_scope` to `dest_scope`
+        '''Creates TF operations that copy weights from `src_scope` to `dest_scope`
         Args:
             dest_scope_name (str): Destination weights (copy to)
             src_scope_name (str): Source weight (copy from)
         Returns:
             List[tf.Operation]: Update operations are created and returned
-        """
+        '''
         # Copy variables src_scope to dest_scope
         op_holder = []
 
@@ -100,7 +100,7 @@ class Test:
         # Mack Trucks TerraPro Low Entry 4x2 LEU612
         # car_steering=39.16
         # Pantechnicon_Removals_Van
-        if car.vehicle == "car":
+        if car.vehicle == 'car':
             car_steering = 36.91
             if car.rearvalid == 0:
                 if action == 0:
@@ -147,7 +147,7 @@ class Test:
                     car.steering = -car_steering
                     reward = 0.1
 
-        elif car.vehicle == "spmt":
+        elif car.vehicle == 'spmt':
             if car.rearvalid == 0:
                 if action == 0:
                     car.velocity.x = 0
@@ -237,28 +237,28 @@ class Test:
 
 class Game:
     def __init__(self):
-        labels = "scherule_trainlabels.txt"
-        label_path = "./trainlabels/"+labels
+        labels = 'scherule_trainlabels.txt'
+        label_path = './trainlabels/'+labels
 
-        f = open(label_path, "r")
+        f = open(label_path, 'r')
         pathdata = f.readlines()
         path_list = []
         for element in pathdata:
-            if int(element.split(" ")[1]) == 1:
-                path_list += [element.split(" ")[0]]
+            if int(element.split(' ')[1]) == 1:
+                path_list += [element.split(' ')[0]]
         f.close()
         print(path_list)
         self.roadimage_path = path_list
 
-        labels = "scherule_testlabels.txt"
-        label_path = "./testlabels/"+labels
+        labels = 'scherule_testlabels.txt'
+        label_path = './testlabels/'+labels
 
-        f = open(label_path, "r")
+        f = open(label_path, 'r')
         pathdata = f.readlines()
         path_list = []
         for element in pathdata:
-            if int(element.split(" ")[1]) == 1:
-                path_list += [element.split(" ")[0]]
+            if int(element.split(' ')[1]) == 1:
+                path_list += [element.split(' ')[0]]
         f.close()
         print(path_list)
         self.roadimage_path += path_list
@@ -267,7 +267,7 @@ class Game:
         self.map_updatecount = 1
         self.util.imagefile = self.roadimage_path[0]
         pygame.init()
-        pygame.display.set_caption("Swept Path Analysis")
+        pygame.display.set_caption('Swept Path Analysis')
         self.startx = 300
         self.starty = 590
         self.startangle = 0
@@ -277,7 +277,7 @@ class Game:
             (self.width, self.height), HWSURFACE | DOUBLEBUF)
         self.clock = pygame.time.Clock()
         self.ticks = 1000
-        self.vehicle = "spmt"
+        self.vehicle = 'spmt'
         self.scope_image_size = 300
         self.scope_image_resize = 64
         self.outputsize = 9
@@ -294,29 +294,29 @@ class Game:
             (car.carwidth, car.carlength), pygame.SRCALPHA)
         stack_image.fill(gray)
         ppu = 1
-        if car.vehicle == "car":
+        if car.vehicle == 'car':
             test = Test(input_size=(self.scope_image_resize *
                         self.scope_image_resize,), output_size=self.outputsize)
-        elif car.vehicle == "spmt":
+        elif car.vehicle == 'spmt':
             test = Test(input_size=(self.scope_image_resize *
                         self.scope_image_resize,), output_size=self.outputsize)
-        logger.info("FLAGS configure.")
+        logger.info('FLAGS configure.')
         # logger.info(FLAGS.__flags)
         # store the previous observations in replay memory
         replay_buffer = deque(maxlen=FLAGS.replay_memory_length)
         with tf.compat.v1.Session() as sess:
             mainDQN = DeepQNetwork(sess, FLAGS.model_name, test.input_size, test.output_size,
-                                   learning_rate=FLAGS.learning_rate, frame_size=FLAGS.frame_size, name="main")
+                                   learning_rate=FLAGS.learning_rate, frame_size=FLAGS.frame_size, name='main')
             targetDQN = DeepQNetwork(sess, FLAGS.model_name, test.input_size,
-                                     test.output_size, frame_size=FLAGS.frame_size, name="target")
+                                     test.output_size, frame_size=FLAGS.frame_size, name='target')
 
             sess.run(tf.compat.v1.global_variables_initializer())
             saver = tf.compat.v1.train.Saver(tf.compat.v1.global_variables())
             saver.restore(sess, tf.train.latest_checkpoint(FLAGS.RL_model))
 
             # initial copy q_net -> target_net
-            copy_ops = test.get_copy_var_ops(dest_scope_name="target",
-                                             src_scope_name="main")
+            copy_ops = test.get_copy_var_ops(dest_scope_name='target',
+                                             src_scope_name='main')
             sess.run(copy_ops)
             global_step = 1
             stack_list = [[pygame.transform.rotate(
@@ -363,12 +363,12 @@ class Game:
                     state = np.reshape(
                         state, (1, test.RAM_FIXED_LENGTH, FLAGS.frame_size))
                 same_check_list = deque(maxlen=50)
-                print("True : "+str(truecount)+" False : "+str(falsecount))
+                print('True : '+str(truecount)+' False : '+str(falsecount))
                 while not self.done:
                     #dt = self.clock.get_time() / 1000
-                    if self.vehicle == "car":
+                    if self.vehicle == 'car':
                         dt = 0.04
-                    elif self.vehicle == "spmt":
+                    elif self.vehicle == 'spmt':
                         dt = 0.04
                     action = np.argmax(mainDQN.predict(state))
 
@@ -392,35 +392,35 @@ class Game:
                     if (nextvalid != 1 and nextvalid != 0) or (step_count != 0 and step_count % 1000 == 0):
                         self.done = True
                     if nextvalid == 0:
-                        # print("Collision!!!")
+                        # print('Collision!!!')
                         reward = -4.0
                     elif nextvalid == 2:
-                        print("Finish the Analysis!!!")
-                        print("True")
+                        print('Finish the Analysis!!!')
+                        print('True')
                         trainlabel_element = open(
-                            "./model_test/sheurle_testresult.txt", "a+")
-                        trainlabel_element.write(self.util.imagefile+" 1 \n")
+                            './model_test/sheurle_testresult.txt', 'a+')
+                        trainlabel_element.write(self.util.imagefile+' 1 \n')
                         trainlabel_element.close()
                         truecount += 1
                         reward = 3.0
                         truelist += [self.util.imagefile]
                     elif nextvalid == 3:
-                        print("True")
+                        print('True')
                         trainlabel_element = open(
-                            "./model_test/sheurle_testresult.txt", "a+")
-                        trainlabel_element.write(self.util.imagefile+" 1 \n")
+                            './model_test/sheurle_testresult.txt', 'a+')
+                        trainlabel_element.write(self.util.imagefile+' 1 \n')
                         trainlabel_element.close()
                         truecount += 1
                         truelist += [self.util.imagefile]
                     elif nextvalid == 4:
-                        print("False")
+                        print('False')
                         trainlabel_element = open(
-                            "./model_test/sheurle_testresult.txt", "a+")
-                        trainlabel_element.write(self.util.imagefile+" 0 \n")
+                            './model_test/sheurle_testresult.txt', 'a+')
+                        trainlabel_element.write(self.util.imagefile+' 0 \n')
                         trainlabel_element.close()
                         falsecount += 1
                     elif nextvalid == 4:
-                        print("SKIP")
+                        print('SKIP')
                         continue
                     # Current State by Lidar Sensor
                     next_state = self.util.get_instant_image(
@@ -439,8 +439,8 @@ class Game:
                         loss, _ = test.replay_train(
                             mainDQN, targetDQN, minibatch)
                         if FLAGS.step_verbose and step_count % FLAGS.step_verbose_count == 0:
-                            print(" - step_count : "+str(step_count) +
-                                  ", reward: "+str(e_reward)+" ,loss: "+str(loss))
+                            print(' - step_count : '+str(step_count) +
+                                  ', reward: '+str(e_reward)+' ,loss: '+str(loss))
                     if step_count % FLAGS.target_update_count == 0:
                         sess.run(copy_ops)
 
@@ -458,16 +458,16 @@ class Game:
                     # for element in stack_list:
                     #    self.screen.blit(element[0], element[1] * ppu - (element[0].get_rect().width / 2, element[0].get_rect().height / 2))
                     # for lidar sensor
-                    """
+                    '''
                     pygame.draw.aaline(self.screen, (0,0,255), [car.position[0],car.position[1]], [front_lidar[0],front_lidar[1]], 5)
                     pygame.draw.circle(self.screen,(0,255,0),[int(front_lidar[0]),int(front_lidar[1])],5)
                     pygame.draw.circle(self.screen,(0,255,0),[int(carfront[0]),int(carfront[1])],5)
-                    """
-                    """writing episode"""
+                    '''
+                    '''writing episode'''
                     fontObj = pygame.font.Font(
                         './font/times-new-roman.ttf', 30)
                     textSurfaceObj = fontObj.render(
-                        "Episode "+str(episode), True, (255, 255, 255), (0, 0, 0))
+                        'Episode '+str(episode), True, (255, 255, 255), (0, 0, 0))
                     textRectObj = textSurfaceObj.get_rect()
                     textRectObj.center = (100, 30)
                     self.screen.blit(textSurfaceObj, textRectObj)
