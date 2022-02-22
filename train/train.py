@@ -197,7 +197,7 @@ class Train:
                     car.velocity.y=-car.car_velocity
                     car.steering=0
                     reward=0.1
-            return reward
+        return reward
 
     def action_sample(self,vehicle,outputsize):
         return random.randint(0,outputsize-1)
@@ -243,10 +243,10 @@ class Game:
         self.ticks = 1000
         self.scope_image_size=300
         self.scope_image_resize=64
-        self.outputsize=9
-        #spmt : 5
-        #car : 3
-    
+        if self.vehicle_type == 'car':
+            self.outputsize=6
+        else:
+            self.outputsize=9
     def run(self):
         car = Car(x=self.startx,y=self.starty,angle=self.startangle,vehicle_type=self.vehicle_type, vehicle_name=self.vehicle_name)
         red = (255, 0, 0)
