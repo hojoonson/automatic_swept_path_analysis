@@ -229,10 +229,10 @@ class Simulation:
                     same_check_list.append(np.array(vehicle.position))
                     if nextvalid==0:
                         #logger.info('Collision!!!')
-                        reward = -0.4
+                        reward = min(-4.0, reward - 4.0)
                     if nextvalid==2:
                         logger.info('Finish the Analysis!!!')
-                        reward = 0.4
+                        reward = max(4.0, reward + 4.0)
                     if nextvalid==3:
                         logger.info('force quit to next episode')
                     
