@@ -257,7 +257,7 @@ class utility():
         return x1, x2, x3, x4, y1, y2, y3, y4
 
 
-class Car:
+class Vehicle:
     def __init__(self, x, y, angle, vehicle_type, vehicle_name, max_steering=30):
         # from front of car
         # car spec

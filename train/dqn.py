@@ -10,7 +10,7 @@ import numpy as np
 import tensorflow as tf
 
 from model import MLPv1, Custom_CNN_forimage_v1, Custom_CNN_forimage_v2
-
+from utility import Vehicle
 
 class DeepQNetwork:
 
@@ -88,3 +88,136 @@ class DeepQNetwork:
             self._Y: y_stack
         }
         return self.session.run([self._loss, self._train], feed)
+
+def update_state_and_get_reward(action:int, vehicle:Vehicle) -> float:
+    reward=0
+    if vehicle.vehicle=='car':
+        car_steering=vehicle.car_steering
+        if vehicle.rearvalid == 0:
+            if action == 0:
+                vehicle.velocity.y = vehicle.car_velocity
+                vehicle.steering = 0
+                reward = 0.1
+            elif action == 1:
+                vehicle.velocity.y = vehicle.car_velocity
+                vehicle.steering = car_steering
+                reward = 0.1
+            elif action == 2:
+                vehicle.velocity.y = vehicle.car_velocity
+                vehicle.steering = -car_steering
+                reward = 0.1
+            elif action == 3:
+                reward = -0.2
+            elif action == 4:
+                reward = -0.2
+            elif action == 5:
+                reward = -0.2
+        if vehicle.rearvalid == 1:
+            if action == 0:
+                vehicle.velocity.y = vehicle.car_velocity
+                vehicle.steering = 0
+                reward = -0.05
+            elif action == 1:
+                vehicle.velocity.y = vehicle.car_velocity
+                vehicle.steering = car_steering
+                reward = -0.05
+            elif action == 2:
+                vehicle.velocity.y = vehicle.car_velocity
+                vehicle.steering = -car_steering
+                reward = -0.05
+            elif action == 3:
+                vehicle.velocity.y = -vehicle.car_velocity
+                vehicle.steering = 0
+                reward = -0.1
+            elif action == 4:
+                vehicle.velocity.y = -vehicle.car_velocity
+                vehicle.steering = car_steering
+                reward = 0.1
+            elif action == 5:
+                vehicle.velocity.y = -vehicle.car_velocity
+                vehicle.steering = -car_steering
+                reward = 0.1
+
+    elif vehicle.vehicle=='spmt':
+        if vehicle.rearvalid==0:
+            if action==0:
+                vehicle.velocity.x=0
+                vehicle.velocity.y= vehicle.car_velocity
+                vehicle.steering = 0
+                reward=0.1
+            elif action==1:
+                vehicle.velocity.x=0
+                vehicle.velocity.y=vehicle.car_velocity
+                vehicle.steering = 1
+                reward=0.1
+            elif action==2:
+                vehicle.velocity.x=0
+                vehicle.velocity.y=vehicle.car_velocity
+                vehicle.steering = -1
+                reward=0.1
+            elif action==3:
+                vehicle.velocity.x=-vehicle.car_velocity
+                vehicle.velocity.y= vehicle.car_velocity
+                vehicle.steering=0
+                reward=0.1
+            elif action==4:
+                vehicle.velocity.x= vehicle.car_velocity
+                vehicle.velocity.y= vehicle.car_velocity
+                vehicle.steering=0
+                reward=0.1
+            elif action==5:
+                reward=-0.2
+            elif action==6:
+                reward=-0.2
+            elif action==7:
+                reward=-0.2
+            elif action==8:
+                reward=-0.2
+
+        elif vehicle.rearvalid==1:      
+            if action==0:
+                vehicle.velocity.x=0
+                vehicle.velocity.y= vehicle.car_velocity
+                vehicle.steering = 0
+                reward=0.1
+            elif action==1:
+                vehicle.velocity.x=0
+                vehicle.velocity.y=vehicle.car_velocity
+                vehicle.steering = 1
+                reward=0.1
+            elif action==2:
+                vehicle.velocity.x=0
+                vehicle.velocity.y=vehicle.car_velocity
+                vehicle.steering = -1
+                reward=0.1
+            elif action==3:
+                vehicle.velocity.x=-vehicle.car_velocity
+                vehicle.velocity.y= vehicle.car_velocity
+                vehicle.steering=0
+                reward=0.1
+            elif action==4:
+                vehicle.velocity.x= vehicle.car_velocity
+                vehicle.velocity.y= vehicle.car_velocity
+                vehicle.steering=0
+                reward=0.1
+            elif action==5:
+                vehicle.velocity.x=0
+                vehicle.velocity.y=-vehicle.car_velocity
+                vehicle.steering = 1
+                reward=0.1
+            elif action==6:
+                vehicle.velocity.x=0
+                vehicle.velocity.y=-vehicle.car_velocity
+                vehicle.steering = -1
+                reward=0.1
+            elif action==7:
+                vehicle.velocity.x=-vehicle.car_velocity
+                vehicle.velocity.y=-vehicle.car_velocity
+                vehicle.steering=0
+                reward=0.1
+            elif action==8:
+                vehicle.velocity.x= vehicle.car_velocity
+                vehicle.velocity.y=-vehicle.car_velocity
+                vehicle.steering=0
+                reward=0.1
+    return reward

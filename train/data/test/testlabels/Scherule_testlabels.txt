@@ -1,200 +1,200 @@
-./data/test/testimages/test1.png 1 
-./data/test/testimages/test1_1.png 1 
-./data/test/testimages/test10.png 1 
-./data/test/testimages/test10_1.png 1 
-./data/test/testimages/test100.png 1 
-./data/test/testimages/test100_1.png 1 
-./data/test/testimages/test11.png 1 
-./data/test/testimages/test11_1.png 1 
-./data/test/testimages/test12.png 0 
-./data/test/testimages/test12_1.png 0 
-./data/test/testimages/test13.png 1 
-./data/test/testimages/test13_1.png 1 
-./data/test/testimages/test14.png 0 
-./data/test/testimages/test14_1.png 0 
-./data/test/testimages/test15.png 1 
-./data/test/testimages/test15_1.png 1 
-./data/test/testimages/test16.png 1 
-./data/test/testimages/test16_1.png 1 
-./data/test/testimages/test17.png 1 
-./data/test/testimages/test17_1.png 1 
-./data/test/testimages/test18.png 1 
-./data/test/testimages/test18_1.png 1 
-./data/test/testimages/test19.png 0 
-./data/test/testimages/test19_1.png 0 
-./data/test/testimages/test2.png 0 
-./data/test/testimages/test2_1.png 0 
-./data/test/testimages/test20.png 0 
-./data/test/testimages/test20_1.png 0 
-./data/test/testimages/test21.png 0 
-./data/test/testimages/test21_1.png 0 
-./data/test/testimages/test22.png 1 
-./data/test/testimages/test22_1.png 1 
-./data/test/testimages/test23.png 1 
-./data/test/testimages/test23_1.png 1 
-./data/test/testimages/test24.png 0 
-./data/test/testimages/test24_1.png 0 
-./data/test/testimages/test25.png 0 
-./data/test/testimages/test25_1.png 0 
-./data/test/testimages/test26.png 0 
-./data/test/testimages/test26_1.png 0 
-./data/test/testimages/test27.png 1 
-./data/test/testimages/test27_1.png 1 
-./data/test/testimages/test28.png 0 
-./data/test/testimages/test28_1.png 0 
-./data/test/testimages/test29.png 0 
-./data/test/testimages/test29_1.png 0 
-./data/test/testimages/test3.png 0 
-./data/test/testimages/test3_1.png 0 
-./data/test/testimages/test30.png 0 
-./data/test/testimages/test30_1.png 0 
-./data/test/testimages/test31.png 0 
-./data/test/testimages/test31_1.png 0 
-./data/test/testimages/test32.png 0 
-./data/test/testimages/test32_1.png 0 
-./data/test/testimages/test33.png 0 
-./data/test/testimages/test33_1.png 0 
-./data/test/testimages/test34.png 0 
-./data/test/testimages/test34_1.png 0 
-./data/test/testimages/test35.png 0 
-./data/test/testimages/test35_1.png 0 
-./data/test/testimages/test36.png 1 
-./data/test/testimages/test36_1.png 1 
-./data/test/testimages/test37.png 1 
-./data/test/testimages/test37_1.png 1 
-./data/test/testimages/test38.png 0 
-./data/test/testimages/test38_1.png 0 
-./data/test/testimages/test39.png 0 
-./data/test/testimages/test39_1.png 0 
-./data/test/testimages/test4.png 1 
-./data/test/testimages/test4_1.png 1 
-./data/test/testimages/test40.png 0 
-./data/test/testimages/test40_1.png 0 
-./data/test/testimages/test41.png 0 
-./data/test/testimages/test41_1.png 0 
-./data/test/testimages/test42.png 0 
-./data/test/testimages/test42_1.png 0 
-./data/test/testimages/test43.png 0 
-./data/test/testimages/test43_1.png 0 
-./data/test/testimages/test44.png 1 
-./data/test/testimages/test44_1.png 1 
-./data/test/testimages/test45.png 0 
-./data/test/testimages/test45_1.png 0 
-./data/test/testimages/test46.png 0 
-./data/test/testimages/test46_1.png 0 
-./data/test/testimages/test47.png 0 
-./data/test/testimages/test47_1.png 0 
-./data/test/testimages/test48.png 0 
-./data/test/testimages/test48_1.png 0 
-./data/test/testimages/test49.png 0 
-./data/test/testimages/test49_1.png 0 
-./data/test/testimages/test5.png 0 
-./data/test/testimages/test5_1.png 0 
-./data/test/testimages/test50.png 0 
-./data/test/testimages/test50_1.png 0 
-./data/test/testimages/test51.png 0 
-./data/test/testimages/test51_1.png 0 
-./data/test/testimages/test52.png 1 
-./data/test/testimages/test52_1.png 1 
-./data/test/testimages/test53.png 1 
-./data/test/testimages/test53_1.png 1 
-./data/test/testimages/test54.png 1 
-./data/test/testimages/test54_1.png 1 
-./data/test/testimages/test55.png 1 
-./data/test/testimages/test55_1.png 1 
-./data/test/testimages/test56.png 1 
-./data/test/testimages/test56_1.png 1 
-./data/test/testimages/test57.png 1 
-./data/test/testimages/test57_1.png 1 
-./data/test/testimages/test58.png 1 
-./data/test/testimages/test58_1.png 1 
-./data/test/testimages/test59.png 1 
-./data/test/testimages/test59_1.png 1 
-./data/test/testimages/test6.png 1 
-./data/test/testimages/test6_1.png 1 
-./data/test/testimages/test60.png 1 
-./data/test/testimages/test60_1.png 1 
-./data/test/testimages/test61.png 1 
-./data/test/testimages/test61_1.png 1 
-./data/test/testimages/test62.png 1 
-./data/test/testimages/test62_1.png 1 
-./data/test/testimages/test63.png 1 
-./data/test/testimages/test63_1.png 1 
-./data/test/testimages/test64.png 1 
-./data/test/testimages/test64_1.png 1 
-./data/test/testimages/test65.png 1 
-./data/test/testimages/test65_1.png 1 
-./data/test/testimages/test66.png 0 
-./data/test/testimages/test66_1.png 0 
-./data/test/testimages/test67.png 1 
-./data/test/testimages/test67_1.png 1 
-./data/test/testimages/test68.png 1 
-./data/test/testimages/test68_1.png 1 
-./data/test/testimages/test69.png 0 
-./data/test/testimages/test69_1.png 0 
-./data/test/testimages/test7.png 1 
-./data/test/testimages/test7_1.png 1 
-./data/test/testimages/test70.png 0 
-./data/test/testimages/test70_1.png 0 
-./data/test/testimages/test71.png 1 
-./data/test/testimages/test71_1.png 1 
-./data/test/testimages/test72.png 0 
-./data/test/testimages/test72_1.png 0 
-./data/test/testimages/test73.png 1 
-./data/test/testimages/test73_1.png 1 
-./data/test/testimages/test74.png 0 
-./data/test/testimages/test74_1.png 0 
-./data/test/testimages/test75.png 0 
-./data/test/testimages/test75_1.png 0 
-./data/test/testimages/test76.png 0 
-./data/test/testimages/test76_1.png 0 
-./data/test/testimages/test77.png 0 
-./data/test/testimages/test77_1.png 0 
-./data/test/testimages/test78.png 0 
-./data/test/testimages/test78_1.png 0 
-./data/test/testimages/test79.png 0 
-./data/test/testimages/test79_1.png 0 
-./data/test/testimages/test8.png 1 
-./data/test/testimages/test8_1.png 1 
-./data/test/testimages/test80.png 0 
-./data/test/testimages/test80_1.png 0 
-./data/test/testimages/test81.png 1 
-./data/test/testimages/test81_1.png 1 
-./data/test/testimages/test82.png 1 
-./data/test/testimages/test82_1.png 1 
-./data/test/testimages/test83.png 0 
-./data/test/testimages/test83_1.png 0 
-./data/test/testimages/test84.png 0 
-./data/test/testimages/test84_1.png 0 
-./data/test/testimages/test85.png 0 
-./data/test/testimages/test85_1.png 0 
-./data/test/testimages/test86.png 0 
-./data/test/testimages/test86_1.png 0 
-./data/test/testimages/test87.png 0 
-./data/test/testimages/test87_1.png 0 
-./data/test/testimages/test88.png 1 
-./data/test/testimages/test88_1.png 1 
-./data/test/testimages/test89.png 0 
-./data/test/testimages/test89_1.png 0 
-./data/test/testimages/test9.png 1 
-./data/test/testimages/test9_1.png 1 
-./data/test/testimages/test90.png 0 
-./data/test/testimages/test90_1.png 0 
-./data/test/testimages/test91.png 1 
-./data/test/testimages/test91_1.png 1 
-./data/test/testimages/test92.png 0 
-./data/test/testimages/test92_1.png 0 
-./data/test/testimages/test93.png 0 
-./data/test/testimages/test93_1.png 0 
-./data/test/testimages/test94.png 0 
-./data/test/testimages/test94_1.png 0 
-./data/test/testimages/test95.png 0 
-./data/test/testimages/test95_1.png 0 
-./data/test/testimages/test96.png 0 
-./data/test/testimages/test96_1.png 0 
-./data/test/testimages/test97.png 1 
-./data/test/testimages/test97_1.png 1 
-./data/test/testimages/test98.png 1 
-./data/test/testimages/test98_1.png 1 
-./data/test/testimages/test99.png 1 
-./data/test/testimages/test99_1.png 1 
+./data/test/testimages/test1.png 296.5 600 1 
+./data/test/testimages/test1_1.png 296.5 600 1 
+./data/test/testimages/test10.png 296.5 600 1 
+./data/test/testimages/test10_1.png 296.5 600 1 
+./data/test/testimages/test100.png 296.5 600 1 
+./data/test/testimages/test100_1.png 296.5 600 1 
+./data/test/testimages/test11.png 296.5 600 1 
+./data/test/testimages/test11_1.png 296.5 600 1 
+./data/test/testimages/test12.png 296.5 600 0 
+./data/test/testimages/test12_1.png 296.5 600 0 
+./data/test/testimages/test13.png 296.5 600 1 
+./data/test/testimages/test13_1.png 296.5 600 1 
+./data/test/testimages/test14.png 296.5 600 0 
+./data/test/testimages/test14_1.png 296.5 600 0 
+./data/test/testimages/test15.png 296.5 600 1 
+./data/test/testimages/test15_1.png 296.5 600 1 
+./data/test/testimages/test16.png 296.5 600 1 
+./data/test/testimages/test16_1.png 296.5 600 1 
+./data/test/testimages/test17.png 296.5 600 1 
+./data/test/testimages/test17_1.png 296.5 600 1 
+./data/test/testimages/test18.png 296.5 600 1 
+./data/test/testimages/test18_1.png 296.5 600 1 
+./data/test/testimages/test19.png 296.5 600 0 
+./data/test/testimages/test19_1.png 296.5 600 0 
+./data/test/testimages/test2.png 296.5 600 0 
+./data/test/testimages/test2_1.png 296.5 600 0 
+./data/test/testimages/test20.png 296.5 600 0 
+./data/test/testimages/test20_1.png 296.5 600 0 
+./data/test/testimages/test21.png 296.5 600 0 
+./data/test/testimages/test21_1.png 296.5 600 0 
+./data/test/testimages/test22.png 296.5 600 1 
+./data/test/testimages/test22_1.png 296.5 600 1 
+./data/test/testimages/test23.png 296.5 600 1 
+./data/test/testimages/test23_1.png 296.5 600 1 
+./data/test/testimages/test24.png 296.5 600 0 
+./data/test/testimages/test24_1.png 296.5 600 0 
+./data/test/testimages/test25.png 296.5 600 0 
+./data/test/testimages/test25_1.png 296.5 600 0 
+./data/test/testimages/test26.png 296.5 600 0 
+./data/test/testimages/test26_1.png 296.5 600 0 
+./data/test/testimages/test27.png 296.5 600 1 
+./data/test/testimages/test27_1.png 296.5 600 1 
+./data/test/testimages/test28.png 296.5 600 0 
+./data/test/testimages/test28_1.png 296.5 600 0 
+./data/test/testimages/test29.png 296.5 600 0 
+./data/test/testimages/test29_1.png 296.5 600 0 
+./data/test/testimages/test3.png 296.5 600 0 
+./data/test/testimages/test3_1.png 296.5 600 0 
+./data/test/testimages/test30.png 296.5 600 0 
+./data/test/testimages/test30_1.png 296.5 600 0 
+./data/test/testimages/test31.png 296.5 600 0 
+./data/test/testimages/test31_1.png 296.5 600 0 
+./data/test/testimages/test32.png 296.5 600 0 
+./data/test/testimages/test32_1.png 296.5 600 0 
+./data/test/testimages/test33.png 296.5 600 0 
+./data/test/testimages/test33_1.png 296.5 600 0 
+./data/test/testimages/test34.png 296.5 600 0 
+./data/test/testimages/test34_1.png 296.5 600 0 
+./data/test/testimages/test35.png 296.5 600 0 
+./data/test/testimages/test35_1.png 296.5 600 0 
+./data/test/testimages/test36.png 296.5 600 1 
+./data/test/testimages/test36_1.png 296.5 600 1 
+./data/test/testimages/test37.png 296.5 600 1 
+./data/test/testimages/test37_1.png 296.5 600 1 
+./data/test/testimages/test38.png 296.5 600 0 
+./data/test/testimages/test38_1.png 296.5 600 0 
+./data/test/testimages/test39.png 296.5 600 0 
+./data/test/testimages/test39_1.png 296.5 600 0 
+./data/test/testimages/test4.png 296.5 600 1 
+./data/test/testimages/test4_1.png 296.5 600 1 
+./data/test/testimages/test40.png 296.5 600 0 
+./data/test/testimages/test40_1.png 296.5 600 0 
+./data/test/testimages/test41.png 296.5 600 0 
+./data/test/testimages/test41_1.png 296.5 600 0 
+./data/test/testimages/test42.png 296.5 600 0 
+./data/test/testimages/test42_1.png 296.5 600 0 
+./data/test/testimages/test43.png 296.5 600 0 
+./data/test/testimages/test43_1.png 296.5 600 0 
+./data/test/testimages/test44.png 296.5 600 1 
+./data/test/testimages/test44_1.png 296.5 600 1 
+./data/test/testimages/test45.png 296.5 600 0 
+./data/test/testimages/test45_1.png 296.5 600 0 
+./data/test/testimages/test46.png 296.5 600 0 
+./data/test/testimages/test46_1.png 296.5 600 0 
+./data/test/testimages/test47.png 296.5 600 0 
+./data/test/testimages/test47_1.png 296.5 600 0 
+./data/test/testimages/test48.png 296.5 600 0 
+./data/test/testimages/test48_1.png 296.5 600 0 
+./data/test/testimages/test49.png 296.5 600 0 
+./data/test/testimages/test49_1.png 296.5 600 0 
+./data/test/testimages/test5.png 296.5 600 0 
+./data/test/testimages/test5_1.png 296.5 600 0 
+./data/test/testimages/test50.png 296.5 600 0 
+./data/test/testimages/test50_1.png 296.5 600 0 
+./data/test/testimages/test51.png 296.5 600 0 
+./data/test/testimages/test51_1.png 296.5 600 0 
+./data/test/testimages/test52.png 296.5 600 1 
+./data/test/testimages/test52_1.png 296.5 600 1 
+./data/test/testimages/test53.png 296.5 600 1 
+./data/test/testimages/test53_1.png 296.5 600 1 
+./data/test/testimages/test54.png 296.5 600 1 
+./data/test/testimages/test54_1.png 296.5 600 1 
+./data/test/testimages/test55.png 296.5 600 1 
+./data/test/testimages/test55_1.png 296.5 600 1 
+./data/test/testimages/test56.png 296.5 600 1 
+./data/test/testimages/test56_1.png 296.5 600 1 
+./data/test/testimages/test57.png 296.5 600 1 
+./data/test/testimages/test57_1.png 296.5 600 1 
+./data/test/testimages/test58.png 296.5 600 1 
+./data/test/testimages/test58_1.png 296.5 600 1 
+./data/test/testimages/test59.png 296.5 600 1 
+./data/test/testimages/test59_1.png 296.5 600 1 
+./data/test/testimages/test6.png 296.5 600 1 
+./data/test/testimages/test6_1.png 296.5 600 1 
+./data/test/testimages/test60.png 296.5 600 1 
+./data/test/testimages/test60_1.png 296.5 600 1 
+./data/test/testimages/test61.png 296.5 600 1 
+./data/test/testimages/test61_1.png 296.5 600 1 
+./data/test/testimages/test62.png 296.5 600 1 
+./data/test/testimages/test62_1.png 296.5 600 1 
+./data/test/testimages/test63.png 296.5 600 1 
+./data/test/testimages/test63_1.png 296.5 600 1 
+./data/test/testimages/test64.png 296.5 600 1 
+./data/test/testimages/test64_1.png 296.5 600 1 
+./data/test/testimages/test65.png 296.5 600 1 
+./data/test/testimages/test65_1.png 296.5 600 1 
+./data/test/testimages/test66.png 296.5 600 0 
+./data/test/testimages/test66_1.png 296.5 600 0 
+./data/test/testimages/test67.png 296.5 600 1 
+./data/test/testimages/test67_1.png 296.5 600 1 
+./data/test/testimages/test68.png 296.5 600 1 
+./data/test/testimages/test68_1.png 296.5 600 1 
+./data/test/testimages/test69.png 296.5 600 0 
+./data/test/testimages/test69_1.png 296.5 600 0 
+./data/test/testimages/test7.png 296.5 600 1 
+./data/test/testimages/test7_1.png 296.5 600 1 
+./data/test/testimages/test70.png 296.5 600 0 
+./data/test/testimages/test70_1.png 296.5 600 0 
+./data/test/testimages/test71.png 296.5 600 1 
+./data/test/testimages/test71_1.png 296.5 600 1 
+./data/test/testimages/test72.png 296.5 600 0 
+./data/test/testimages/test72_1.png 296.5 600 0 
+./data/test/testimages/test73.png 296.5 600 1 
+./data/test/testimages/test73_1.png 296.5 600 1 
+./data/test/testimages/test74.png 296.5 600 0 
+./data/test/testimages/test74_1.png 296.5 600 0 
+./data/test/testimages/test75.png 296.5 600 0 
+./data/test/testimages/test75_1.png 296.5 600 0 
+./data/test/testimages/test76.png 296.5 600 0 
+./data/test/testimages/test76_1.png 296.5 600 0 
+./data/test/testimages/test77.png 296.5 600 0 
+./data/test/testimages/test77_1.png 296.5 600 0 
+./data/test/testimages/test78.png 296.5 600 0 
+./data/test/testimages/test78_1.png 296.5 600 0 
+./data/test/testimages/test79.png 296.5 600 0 
+./data/test/testimages/test79_1.png 296.5 600 0 
+./data/test/testimages/test8.png 296.5 600 1 
+./data/test/testimages/test8_1.png 296.5 600 1 
+./data/test/testimages/test80.png 296.5 600 0 
+./data/test/testimages/test80_1.png 296.5 600 0 
+./data/test/testimages/test81.png 296.5 600 1 
+./data/test/testimages/test81_1.png 296.5 600 1 
+./data/test/testimages/test82.png 296.5 600 1 
+./data/test/testimages/test82_1.png 296.5 600 1 
+./data/test/testimages/test83.png 296.5 600 0 
+./data/test/testimages/test83_1.png 296.5 600 0 
+./data/test/testimages/test84.png 296.5 600 0 
+./data/test/testimages/test84_1.png 296.5 600 0 
+./data/test/testimages/test85.png 296.5 600 0 
+./data/test/testimages/test85_1.png 296.5 600 0 
+./data/test/testimages/test86.png 296.5 600 0 
+./data/test/testimages/test86_1.png 296.5 600 0 
+./data/test/testimages/test87.png 296.5 600 0 
+./data/test/testimages/test87_1.png 296.5 600 0 
+./data/test/testimages/test88.png 296.5 600 1 
+./data/test/testimages/test88_1.png 296.5 600 1 
+./data/test/testimages/test89.png 296.5 600 0 
+./data/test/testimages/test89_1.png 296.5 600 0 
+./data/test/testimages/test9.png 296.5 600 1 
+./data/test/testimages/test9_1.png 296.5 600 1 
+./data/test/testimages/test90.png 296.5 600 0 
+./data/test/testimages/test90_1.png 296.5 600 0 
+./data/test/testimages/test91.png 296.5 600 1 
+./data/test/testimages/test91_1.png 296.5 600 1 
+./data/test/testimages/test92.png 296.5 600 0 
+./data/test/testimages/test92_1.png 296.5 600 0 
+./data/test/testimages/test93.png 296.5 600 0 
+./data/test/testimages/test93_1.png 296.5 600 0 
+./data/test/testimages/test94.png 296.5 600 0 
+./data/test/testimages/test94_1.png 296.5 600 0 
+./data/test/testimages/test95.png 296.5 600 0 
+./data/test/testimages/test95_1.png 296.5 600 0 
+./data/test/testimages/test96.png 296.5 600 0 
+./data/test/testimages/test96_1.png 296.5 600 0 
+./data/test/testimages/test97.png 296.5 600 1 
+./data/test/testimages/test97_1.png 296.5 600 1 
+./data/test/testimages/test98.png 296.5 600 1 
+./data/test/testimages/test98_1.png 296.5 600 1 
+./data/test/testimages/test99.png 296.5 600 1 
+./data/test/testimages/test99_1.png 296.5 600 1 
