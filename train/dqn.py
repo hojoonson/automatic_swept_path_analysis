@@ -89,7 +89,7 @@ class DeepQNetwork:
         }
         return self.session.run([self._loss, self._train], feed)
 
-def update_state_and_get_reward(action:int, vehicle:Vehicle) -> float:
+def update_action_and_get_reward(action:int, vehicle:Vehicle) -> float:
     reward=0
     if vehicle.vehicle=='car':
         car_steering=vehicle.car_steering
