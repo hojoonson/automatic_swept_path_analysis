@@ -1,0 +1,31 @@
+Possible : 1
+Impossible : 0
+
+
+Mack_Trucks_TerraPro
+self.car_steering  = 39.16
+self.scale=5
+self.carwidth=7.950*self.scale
+self.carlength=27.054*self.scale
+self.curb_to_curb_r=24.000*self.scale
+self.frontwheel_ratio=6.054/(self.carlength/self.scale)
+self.rearwheel_ratio=(6.054+13.083)/(self.carlength/self.scale)
+
+Pantechnicon_Removals_Van
+self.car_steering  = 36.91
+self.scale = 5.6
+self.carwidth = 8.202*self.scale
+self.carlength = 36.089*self.scale
+self.curb_to_curb_r = 40.026*self.scale
+self.frontwheel_ratio = 4.921/(self.carlength/self.scale)
+self.rearwheel_ratio = (4.921+21.982)/(self.carlength/self.scale)
+
+Scherule
+self.scale = 9.4
+self.carwidth = 2.430*self.scale*4
+self.carlength = 7.330*self.scale*2
+
+Kamag
+self.scale = 9.4
+self.carwidth = 2.430*self.scale*3
+self.carlength = 7.000*self.scale*3
