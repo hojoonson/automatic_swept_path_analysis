@@ -1,11 +1,10 @@
-from utility import utility, Car
+from utility import utility, Vehicle
 from collections import deque
-from dqn import DeepQNetwork
+from dqn import DeepQNetwork, update_action_and_get_reward
 import tensorflow as tf
 import logging
 from typing import List
 import random
-import glob
 import os
 import pygame
 import cv2
@@ -95,147 +94,11 @@ class Test:
 
         return op_holder
 
-    def step(self, action, car):
-        reward = 0
-        # Mack Trucks TerraPro Low Entry 4x2 LEU612
-        # car_steering=39.16
-        # Pantechnicon_Removals_Van
-        if car.vehicle == 'car':
-            car_steering = 36.91
-            if car.rearvalid == 0:
-                if action == 0:
-                    car.velocity.y = car.car_velocity
-                    car.steering = 0
-                    reward = 0.1
-                elif action == 1:
-                    car.velocity.y = car.car_velocity
-                    car.steering = car_steering
-                    reward = 0.1
-                elif action == 2:
-                    car.velocity.y = car.car_velocity
-                    car.steering = -car_steering
-                    reward = 0.1
-                elif action == 3:
-                    reward = -0.2
-                elif action == 4:
-                    reward = -0.2
-                elif action == 5:
-                    reward = -0.2
-            if car.rearvalid == 1:
-                if action == 0:
-                    car.velocity.y = car.car_velocity
-                    car.steering = 0
-                    reward = -0.1
-                elif action == 1:
-                    car.velocity.y = car.car_velocity
-                    car.steering = car_steering
-                    reward = -0.1
-                elif action == 2:
-                    car.velocity.y = car.car_velocity
-                    car.steering = -car_steering
-                    reward = -0.1
-                elif action == 3:
-                    car.velocity.y = -car.car_velocity
-                    car.steering = 0
-                    reward = 0.1
-                elif action == 4:
-                    car.velocity.y = -car.car_velocity
-                    car.steering = car_steering
-                    reward = 0.1
-                elif action == 5:
-                    car.velocity.y = -car.car_velocity
-                    car.steering = -car_steering
-                    reward = 0.1
-
-        elif car.vehicle == 'spmt':
-            if car.rearvalid == 0:
-                if action == 0:
-                    car.velocity.x = 0
-                    car.velocity.y = car.car_velocity
-                    car.steering = 0
-                    reward = 0.1
-                elif action == 1:
-                    car.velocity.x = 0
-                    car.velocity.y = car.car_velocity
-                    car.steering = 1
-                    reward = 0.1
-                elif action == 2:
-                    car.velocity.x = 0
-                    car.velocity.y = car.car_velocity
-                    car.steering = -1
-                    reward = 0.1
-                elif action == 3:
-                    car.velocity.x = -car.car_velocity
-                    car.velocity.y = car.car_velocity
-                    car.steering = 0
-                    reward = 0.1
-                elif action == 4:
-                    car.velocity.x = car.car_velocity
-                    car.velocity.y = car.car_velocity
-                    car.steering = 0
-                    reward = 0.1
-                elif action == 5:
-                    reward = -0.2
-                elif action == 6:
-                    reward = -0.2
-                elif action == 7:
-                    reward = -0.2
-                elif action == 8:
-                    reward = -0.2
-
-            elif car.rearvalid == 1:
-                if action == 0:
-                    car.velocity.x = 0
-                    car.velocity.y = car.car_velocity
-                    car.steering = 0
-                    reward = 0.1
-                elif action == 1:
-                    car.velocity.x = 0
-                    car.velocity.y = car.car_velocity
-                    car.steering = 1
-                    reward = 0.1
-                elif action == 2:
-                    car.velocity.x = 0
-                    car.velocity.y = car.car_velocity
-                    car.steering = -1
-                    reward = 0.1
-                elif action == 3:
-                    car.velocity.x = -car.car_velocity
-                    car.velocity.y = car.car_velocity
-                    car.steering = 0
-                    reward = 0.1
-                elif action == 4:
-                    car.velocity.x = car.car_velocity
-                    car.velocity.y = car.car_velocity
-                    car.steering = 0
-                    reward = 0.1
-                elif action == 5:
-                    car.velocity.x = 0
-                    car.velocity.y = -car.car_velocity
-                    car.steering = 1
-                    reward = 0.1
-                elif action == 6:
-                    car.velocity.x = 0
-                    car.velocity.y = -car.car_velocity
-                    car.steering = -1
-                    reward = 0.1
-                elif action == 7:
-                    car.velocity.x = -car.car_velocity
-                    car.velocity.y = -car.car_velocity
-                    car.steering = 0
-                    reward = 0.1
-                elif action == 8:
-                    car.velocity.x = car.car_velocity
-                    car.velocity.y = -car.car_velocity
-                    car.steering = 0
-                    reward = 0.1
-        return reward
-
     def action_sample(self, vehicle, outputsize):
         return random.randint(0, outputsize-1)
 
 
-class Game:
+class Simulation:
     def __init__(self):
         labels = 'scherule_trainlabels.txt'
         label_path = './trainlabels/'+labels
@@ -283,7 +146,7 @@ class Game:
         self.outputsize = 9
 
     def run(self):
-        car = Car(x=self.startx, y=self.starty,
+        car = Vehicle(x=self.startx, y=self.starty,
                   angle=self.startangle, vehicle=self.vehicle)
         red = (255, 0, 0)
         gray = (100, 100, 100)
@@ -342,7 +205,7 @@ class Game:
                 self.collision_valid = 0
                 self.finish_valid = 0
                 # Initializing
-                car = Car(x=self.startx, y=self.starty,
+                car = Vehicle(x=self.startx, y=self.starty,
                           angle=self.startangle, vehicle=self.vehicle)
                 nextvalid = 1
                 stack_list = [[pygame.transform.rotate(
@@ -479,10 +342,9 @@ class Game:
                     # print(time.time()-timemarker,len(result))
                     # self.clock.tick(self.ticks)
                     global_step += 1
-            lossresult.close()
             pygame.quit()
 
 
 if __name__ == '__main__':
-    game = Game()
+    game = Simulation()
     game.run()

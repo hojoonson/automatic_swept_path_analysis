@@ -79,32 +79,20 @@ class Simulation:
         path_list=[]
         with open(label_path,'r') as f:
             pathdata = f.readlines()
-            
             for element in pathdata:
                 splited = element.split(' ')
-                if int(splited[3])==1:
-                    path_list.append({
-                        'image_path': splited[0],
-                        'startx': float(splited[1]),
-                        'starty': float(splited[2])
-                    })
-
-        label_path=os.path.join('data','test','testlabels',f'{self.vehicle_name}_testlabels.txt')
-        with open(label_path,'r') as f:
-            pathdata = f.readlines()
-            for element in pathdata:
-                if int(element.split(' ')[3])==1:
-                    splited = element.split(' ')
-                    path_list.append({
-                        'image_path': splited[0],
-                        'startx': float(splited[1]),
-                        'starty': float(splited[2])
-                    })
-
+                path_list.append({
+                    'image_path': splited[0],
+                    'startx': float(splited[1]),
+                    'starty': float(splited[2]),
+                    'label': '0',
+                    'retry': 0
+                })
         self.roadimage_path=path_list
+        print(self.roadimage_path)
         self.util=utility()
         self.random_candidate=3
-        self.map_updatecount=3
+        self.map_updatecount=2
         self.util.imagefile=self.roadimage_path[0]['image_path']
         pygame.init()
         pygame.display.set_caption('Swept Path Analysis')
@@ -141,9 +129,9 @@ class Simulation:
         replay_buffer = deque(maxlen=FLAGS.replay_memory_length)
         
         # Initialize result paths
-        os.makedirs('train_result', exist_ok=True)
+        os.makedirs('automatic_labelling_result', exist_ok=True)
         save_time = str(datetime.datetime.now())
-        result_path = os.path.join('train_result',f'{self.vehicle_name}_output:{self.outputsize}_f{FLAGS.frame_size}_transport_{self.vehicle_type}_model_{FLAGS.model_name}_checkpoint')
+        result_path = os.path.join('automatic_labelling_result',f'{self.vehicle_name}_output:{self.outputsize}_f{FLAGS.frame_size}_transport_{self.vehicle_type}_model_{FLAGS.model_name}_checkpoint')
         os.makedirs(result_path, exist_ok=True)
         result_path = os.path.join(result_path, save_time)
         os.makedirs(result_path, exist_ok=True)
@@ -151,9 +139,9 @@ class Simulation:
         result_path = os.path.join(result_path, 'result')
         os.makedirs(result_path, exist_ok=True)
 
-        reward_and_loss=open(os.path.join(result_path,'reward_and_loss.csv'), 'w+', newline='')
-        resultwriter = csv.writer(reward_and_loss)
-        resultwriter.writerow(['Episode', 'Reward', 'Loss'])
+        with open(os.path.join(result_path,'reward_and_loss.csv'), 'w', newline='') as reward_and_loss:
+            resultwriter = csv.writer(reward_and_loss)
+            resultwriter.writerow(['Episode', 'Reward', 'Loss'])
 
         with tf.compat.v1.Session() as sess:
             mainDQN = DeepQNetwork(sess, FLAGS.model_name, train.input_size, train.output_size, learning_rate=FLAGS.learning_rate, frame_size=FLAGS.frame_size, name='main')
@@ -172,6 +160,8 @@ class Simulation:
             for episode in range(FLAGS.max_episode_count):
                 #set road image!
                 index = int(episode/self.map_updatecount)%len(self.roadimage_path)
+                if self.roadimage_path[index]['retry'] > self.map_updatecount * 5:
+                    continue
                 self.util.imagefile=self.roadimage_path[index]['image_path']
                 self.startx=self.roadimage_path[index]['startx']
                 self.starty=self.roadimage_path[index]['starty']
@@ -271,13 +261,32 @@ class Simulation:
                     step_count += 1
 
                     if len(same_check_list)==50 and len(np.unique(same_check_list))==2:
-                        e_loss = e_loss/e_step if e_step != 0 else e_loss
-                        resultwriter.writerow([episode, e_reward, e_loss])
+                        self.roadimage_path[index]['retry'] += 1
+                        e_loss /= e_step
+                        with open(os.path.join(result_path,'reward_and_loss.csv'), 'a', newline='') as reward_and_loss:
+                            resultwriter = csv.writer(reward_and_loss)
+                            resultwriter.writerow([episode, e_reward, e_loss])
+                        with open(os.path.join(result_path,'label.csv'), 'w', newline='') as output_file:
+                            dict_writer = csv.DictWriter(output_file, self.roadimage_path[index].keys())
+                            dict_writer.writeheader()
+                            dict_writer.writerows(self.roadimage_path)
                         self.done=True
                     if (nextvalid!=1 and nextvalid!=0) or (step_count!=0 and step_count%1000==0):
-                        e_loss = e_loss/e_step if e_step != 0 else e_loss
-                        resultwriter.writerow([episode, e_reward, e_loss])
+                        if nextvalid==2:
+                            self.roadimage_path[index]['label'] = '1'
+                        else:
+                            self.roadimage_path[index]['retry'] += 1
+                        e_loss /= e_step
+                        with open(os.path.join(result_path,'reward_and_loss.csv'), 'a', newline='') as reward_and_loss:
+                            resultwriter = csv.writer(reward_and_loss)
+                            resultwriter.writerow([episode, e_reward, e_loss])
+                        with open(os.path.join(result_path,'label.csv'), 'w', newline='') as output_file:
+                            dict_writer = csv.DictWriter(output_file, self.roadimage_path[index].keys())
+                            dict_writer.writeheader()
+                            dict_writer.writerows(self.roadimage_path)
                         self.done=True
+
+
 
                     # save model checkpoint
                     if global_step % FLAGS.save_step_count == 0:
@@ -300,7 +309,6 @@ class Simulation:
                     #logger.info(time.time()-timemarker,len(result))
                     #self.clock.tick(self.ticks)
                     global_step+=1
-            reward_and_loss.close()
             pygame.quit()
 
 

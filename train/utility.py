@@ -339,8 +339,7 @@ class Vehicle:
             newangle = self.angle+self.steering
         check_collision = util.check_collision(
             newposition, newangle, self.carwidth, self.carlength)
-        check_finish = ((newposition[0]+self.carlength/2*math.sin(newangle)) < -10 or (newposition[0]+self.carlength/2*math.sin(newangle)) > 610)\
-            or ((newposition[1]-self.carlength/2*math.cos(newangle)) < -10)
+        check_finish = (newposition[0] < -10 or newposition[0] > 610) or (newposition[1] < -10 or newposition[1] > 610)
         if check_collision:
             self.position = self.position
             self.angle = self.angle

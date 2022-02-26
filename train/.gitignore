@@ -6,6 +6,7 @@ saved_models
 checkpoints
 classification_result
 train_result
+automatic_labelling_result
 result_log
 semiresult
 legacy
