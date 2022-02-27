@@ -241,8 +241,12 @@ class Simulation:
                         #logger.info('Collision!!!')
                         reward = min(-4.0, reward - 4.0)
                     if nextvalid==2:
-                        logger.info('Finish the Analysis!!!')
-                        reward = max(4.0, reward + 4.0)
+                        if vehicle.velocity.y<=0:
+                            logger.info('Finish the Analysis!!!')
+                            reward = max(4.0, reward + 4.0)
+                        else:
+                            nextvalid = 0
+                            reward = min(-4.0, reward - 4.0)
                     if nextvalid==3:
                         logger.info('force quit to next episode')
                     

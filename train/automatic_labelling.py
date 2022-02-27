@@ -85,8 +85,10 @@ class Simulation:
                     'image_path': splited[0],
                     'startx': float(splited[1]),
                     'starty': float(splited[2]),
+                    'retry': 0,
                     'label': '0',
-                    'retry': 0
+                    'gt': splited[3],
+                    'correct': '0' == splited[3]
                 })
         self.roadimage_path=path_list
         print(self.roadimage_path)
@@ -231,11 +233,15 @@ class Simulation:
                         #logger.info('Collision!!!')
                         reward = min(-4.0, reward - 4.0)
                     if nextvalid==2:
-                        logger.info('Finish the Analysis!!!')
-                        reward = max(4.0, reward + 4.0)
+                        if vehicle.velocity.y<=0:
+                            logger.info('Finish the Analysis!!!')
+                            reward = max(4.0, reward + 4.0)
+                        else:
+                            nextvalid = 0
+                            reward = min(-4.0, reward - 4.0)
                     if nextvalid==3:
                         logger.info('force quit to next episode')
-                    
+
                     # Next State
                     next_state=self.util.get_instant_image(vehicle.position,vehicle.angle,vehicle.carwidth,vehicle.carlength,self.scope_image_size,self.scope_image_resize)
                     next_state=next_state.flatten()
@@ -274,6 +280,7 @@ class Simulation:
                     if (nextvalid!=1 and nextvalid!=0) or (step_count!=0 and step_count%1000==0):
                         if nextvalid==2:
                             self.roadimage_path[index]['label'] = '1'
+                            self.roadimage_path[index]['correct'] = '1' == self.roadimage_path[index]['gt']
                         else:
                             self.roadimage_path[index]['retry'] += 1
                         e_loss /= e_step
