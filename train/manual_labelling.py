@@ -1,4 +1,4 @@
-from utility import utility, Car
+from utility import utility, Vehicle
 from collections import deque
 import logging
 import random
@@ -36,124 +36,123 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height), HWSURFACE | DOUBLEBUF)
         self.clock = pygame.time.Clock()
         self.ticks = 1000
-        self.vehicle='car'
+        self.vehicle_name='Scherule'
+        self.vehicle_type='spmt'
         self.scope_image_size=300
         self.scope_image_resize=64
-        self.outputsize=6
         #spmt : 5
         #car : 3
     
-    def step(self,action,car):
+    def step(self, action, vehicle):
         reward=0
         #Mack Trucks TerraPro Low Entry 4x2 LEU612
         #car_steering=39.16
         #Pantechnicon_Removals_Van
-        if car.vehicle=='car':
-            car_steering=36.91
-            if car.rearvalid==0:
+        if vehicle.vehicle=='car':
+            car_steering=vehicle.car_steering
+            if vehicle.rearvalid==0:
                 if action==0:
-                    car.velocity.y= car.car_velocity
-                    car.steering = 0
+                    vehicle.velocity.y= vehicle.car_velocity
+                    vehicle.steering = 0
                 elif action==1:
-                    car.velocity.y = car.car_velocity
-                    car.steering = car_steering
+                    vehicle.velocity.y = vehicle.car_velocity
+                    vehicle.steering = car_steering
                 elif action==2:
-                    car.velocity.y= car.car_velocity
-                    car.steering = -car_steering
+                    vehicle.velocity.y= vehicle.car_velocity
+                    vehicle.steering = -car_steering
                 elif action==3:
-                    car.velocity.y= -car.car_velocity
-                    car.steering = 0
+                    vehicle.velocity.y= -vehicle.car_velocity
+                    vehicle.steering = 0
                 elif action==4:
-                    car.velocity.y = -car.car_velocity
-                    car.steering = car_steering
+                    vehicle.velocity.y = -vehicle.car_velocity
+                    vehicle.steering = car_steering
                 elif action==5:
-                    car.velocity.y= -car.car_velocity
-                    car.steering = -car_steering
-            if car.rearvalid==1:
+                    vehicle.velocity.y= -vehicle.car_velocity
+                    vehicle.steering = -car_steering
+            if vehicle.rearvalid==1:
                 if action==0:
-                    car.velocity.y= car.car_velocity
-                    car.steering = 0
+                    vehicle.velocity.y= vehicle.car_velocity
+                    vehicle.steering = 0
                 elif action==1:
-                    car.velocity.y = car.car_velocity
-                    car.steering = car_steering
+                    vehicle.velocity.y = vehicle.car_velocity
+                    vehicle.steering = car_steering
                 elif action==2:
-                    car.velocity.y= car.car_velocity
-                    car.steering = -car_steering
+                    vehicle.velocity.y= vehicle.car_velocity
+                    vehicle.steering = -car_steering
                 elif action==3:
-                    car.velocity.y= -car.car_velocity
-                    car.steering = 0
+                    vehicle.velocity.y= -vehicle.car_velocity
+                    vehicle.steering = 0
                 elif action==4:
-                    car.velocity.y = -car.car_velocity
-                    car.steering = car_steering
+                    vehicle.velocity.y = -vehicle.car_velocity
+                    vehicle.steering = car_steering
                 elif action==5:
-                    car.velocity.y= -car.car_velocity
-                    car.steering = -car_steering
-        elif car.vehicle=='spmt':
+                    vehicle.velocity.y= -vehicle.car_velocity
+                    vehicle.steering = -car_steering
+        elif vehicle.vehicle=='spmt':
             if action==0:
-                car.velocity.x=0
-                car.velocity.y= car.car_velocity
-                car.steering = 0
+                vehicle.velocity.x=0
+                vehicle.velocity.y= vehicle.car_velocity
+                vehicle.steering = 0
             elif action==1:
-                car.velocity.x=-car.car_velocity
-                car.velocity.y= car.car_velocity
-                car.steering=0
+                vehicle.velocity.x=-vehicle.car_velocity
+                vehicle.velocity.y= vehicle.car_velocity
+                vehicle.steering=0
             elif action==2:
-                car.velocity.x= car.car_velocity
-                car.velocity.y= car.car_velocity
-                car.steering=0
+                vehicle.velocity.x= vehicle.car_velocity
+                vehicle.velocity.y= vehicle.car_velocity
+                vehicle.steering=0
             elif action==3:
-                car.velocity.x=0
-                car.velocity.y=-car.car_velocity
-                car.steering=0
+                vehicle.velocity.x=0
+                vehicle.velocity.y=-vehicle.car_velocity
+                vehicle.steering=0
             elif action==4:
-                car.velocity.x=-car.car_velocity
-                car.velocity.y=-car.car_velocity
-                car.steering=0
+                vehicle.velocity.x=-vehicle.car_velocity
+                vehicle.velocity.y=-vehicle.car_velocity
+                vehicle.steering=0
             elif action==5:
-                car.velocity.x= car.car_velocity
-                car.velocity.y=-car.car_velocity
-                car.steering=0
+                vehicle.velocity.x= vehicle.car_velocity
+                vehicle.velocity.y=-vehicle.car_velocity
+                vehicle.steering=0
             elif action==6:
-                car.velocity.x=0
-                car.velocity.y=0
-                car.steering = 1
+                vehicle.velocity.x=0
+                vehicle.velocity.y=0
+                vehicle.steering = 1
             elif action==7:
-                car.velocity.x=0
-                car.velocity.y=0
-                car.steering = -1
+                vehicle.velocity.x=0
+                vehicle.velocity.y=0
+                vehicle.steering = -1
             elif action==8:
-                car.velocity.x=-car.car_velocity
-                car.velocity.y= 0
-                car.steering=0
+                vehicle.velocity.x=-vehicle.car_velocity
+                vehicle.velocity.y= 0
+                vehicle.steering=0
             elif action==9:
-                car.velocity.x= car.car_velocity
-                car.velocity.y= 0
-                car.steering=0
-
+                vehicle.velocity.x= vehicle.car_velocity
+                vehicle.velocity.y= 0
+                vehicle.steering=0
             elif action==10:
-                car.velocity.x=0
-                car.velocity.y=car.car_velocity
-                car.steering = 1
+                vehicle.velocity.x=0
+                vehicle.velocity.y=vehicle.car_velocity
+                vehicle.steering = 1
             elif action==11:
-                car.velocity.x=0
-                car.velocity.y=car.car_velocity
-                car.steering = -1
+                vehicle.velocity.x=0
+                vehicle.velocity.y=vehicle.car_velocity
+                vehicle.steering = -1
             elif action==12:
-                car.velocity.x= 0
-                car.velocity.y=-car.car_velocity
-                car.steering= 1
+                vehicle.velocity.x= 0
+                vehicle.velocity.y=-vehicle.car_velocity
+                vehicle.steering= 1
             elif action==13:
-                car.velocity.x= 0
-                car.velocity.y= -car.car_velocity
-                car.steering= -1        
+                vehicle.velocity.x= 0
+                vehicle.velocity.y= -vehicle.car_velocity
+                vehicle.steering= -1        
 
     def run(self):
-        car = Car(x=self.startx,y=self.starty,angle=self.startangle,vehicle=self.vehicle)
+        vehicle = Vehicle(x=self.startx,y=self.starty,angle=self.startangle,vehicle_type=self.vehicle_type, vehicle_name=self.vehicle_name)
         red = (255, 0, 0)
         gray = (100,100,100)
-        car_image = pygame.Surface((car.carwidth,car.carlength),pygame.SRCALPHA)
+        car_image = pygame.Surface((vehicle.carwidth,vehicle.carlength),pygame.SRCALPHA)
         car_image.fill(red)
-        stack_image = pygame.Surface((car.carwidth,car.carlength),pygame.SRCALPHA)
+        stack_image = pygame.Surface((vehicle.carwidth,vehicle.carlength),pygame.SRCALPHA)
         stack_image.fill(gray)
         ppu = 1   
 
@@ -161,7 +160,7 @@ class Game:
         #logger.info(FLAGS.__flags)
         # store the previous observations in replay memory
         global_step = 1
-        stack_list=[[pygame.transform.rotate(stack_image,car.angle),car.position,car.angle]]
+        stack_list=[[pygame.transform.rotate(stack_image,vehicle.angle),vehicle.position,vehicle.angle]]
         breakvalid=0
         presscount=0
         trainlabel_path = 'testlabels'
@@ -193,11 +192,11 @@ class Game:
                 randomstate=random.sample(stack_list,self.random_candidate)
                 randomstate+=[[0,[self.startx,self.starty],self.startangle]]
                 random_before_state=random.sample(randomstate,1)
-                car = Car(x=random_before_state[0][1][0],y=random_before_state[0][1][1],angle=random_before_state[0][2],vehicle=self.vehicle)
+                vehicle = Vehicle(x=random_before_state[0][1][0],y=random_before_state[0][1][1],angle=random_before_state[0][2],vehicle_type=self.vehicle_type, vehicle_name=self.vehicle_name)
             else:
-                car = Car(x=self.startx,y=self.starty,angle=self.startangle,vehicle=self.vehicle)
+                vehicle = Vehicle(x=self.startx,y=self.starty,angle=self.startangle,vehicle_type=self.vehicle_type, vehicle_name=self.vehicle_name)
             nextvalid=1
-            stack_list=[[pygame.transform.rotate(stack_image,car.angle),car.position,car.angle]]
+            stack_list=[[pygame.transform.rotate(stack_image,vehicle.angle),vehicle.position,vehicle.angle]]
             self.done = False
 
             
@@ -205,9 +204,9 @@ class Game:
             rear_count=0
             while not self.done:
                 #dt = self.clock.get_time() / 1000
-                if self.vehicle=='car':
+                if self.vehicle_type=='car':
                     dt = 0.04
-                elif self.vehicle=='spmt':
+                elif self.vehicle_type=='spmt':
                     dt = 0.04
                 # Event queue
                 for event in pygame.event.get():
@@ -216,68 +215,68 @@ class Game:
                 # User input 
                 action=-1
                 pressed = pygame.key.get_pressed()
-                car.velocity.x=0
-                car.velocity.y=0
-                car.steering=0
+                vehicle.velocity.x=0
+                vehicle.velocity.y=0
+                vehicle.steering=0
                 if pressed[pygame.K_c]:
                     pygame.image.save(self.screen, 'screenshot.png')
                 if pressed[pygame.K_UP]:
                     action=0
                     if pressed[pygame.K_RIGHT]:
-                        if car.vehicle=='car':
+                        if vehicle.vehicle=='car':
                             action=1
-                        elif car.vehicle=='spmt':
+                        elif vehicle.vehicle=='spmt':
                             action=1
                     elif pressed[pygame.K_LEFT]:
-                        if car.vehicle=='car':
+                        if vehicle.vehicle=='car':
                             action=2
-                        elif car.vehicle=='spmt':
+                        elif vehicle.vehicle=='spmt':
                             action=2
                     elif pressed[pygame.K_q]:
-                        if car.vehicle=='spmt':
+                        if vehicle.vehicle=='spmt':
                             action=10
                     elif pressed[pygame.K_e]:
-                        if car.vehicle=='spmt':
+                        if vehicle.vehicle=='spmt':
                             action=11
                     else :
-                        if car.vehicle=='car':
-                            car.velocity.x=0
-                            car.velocity.y=0
-                            car.steering=0
-                        elif car.vehicle=='spmt':
-                            car.velocity.x=0
-                            car.velocity.y=0
-                            car.steering=0
+                        if vehicle.vehicle=='car':
+                            vehicle.velocity.x=0
+                            vehicle.velocity.y=0
+                            vehicle.steering=0
+                        elif vehicle.vehicle=='spmt':
+                            vehicle.velocity.x=0
+                            vehicle.velocity.y=0
+                            vehicle.steering=0
 
                 elif pressed[pygame.K_DOWN]:
                     action=3
                     if pressed[pygame.K_RIGHT]:
-                        if car.vehicle=='car':
+                        if vehicle.vehicle=='car':
                             action=4
-                        elif car.vehicle=='spmt':
+                        elif vehicle.vehicle=='spmt':
                             action=4
                     elif pressed[pygame.K_LEFT]:
-                        if car.vehicle=='car':
+                        if vehicle.vehicle=='car':
                             action=5
-                        elif car.vehicle=='spmt':
+                        elif vehicle.vehicle=='spmt':
                             action=5
                     elif pressed[pygame.K_q]:
-                        if car.vehicle=='spmt':
+                        if vehicle.vehicle=='spmt':
                             action=12
                     elif pressed[pygame.K_e]:
-                        if car.vehicle=='spmt':
+                        if vehicle.vehicle=='spmt':
                             action=13
                     else:
-                        if car.vehicle=='car':
-                            car.velocity.x=0
-                            car.velocity.y=0
-                            car.steering=0
-                        elif car.vehicle=='spmt':
-                            car.velocity.x=0
-                            car.velocity.y=0
-                            car.steering=0
+                        if vehicle.vehicle=='car':
+                            vehicle.velocity.x=0
+                            vehicle.velocity.y=0
+                            vehicle.steering=0
+                        elif vehicle.vehicle=='spmt':
+                            vehicle.velocity.x=0
+                            vehicle.velocity.y=0
+                            vehicle.steering=0
                 else:
-                    if car.vehicle=='spmt':
+                    if vehicle.vehicle=='spmt':
                         if pressed[pygame.K_q]:
                             action=6
                         elif pressed[pygame.K_e]:
@@ -287,9 +286,9 @@ class Game:
                         elif pressed[pygame.K_LEFT]:
                             action=9
                         else:
-                            car.velocity.x=0
-                            car.velocity.y=0
-                            car.steering=0
+                            vehicle.velocity.x=0
+                            vehicle.velocity.y=0
+                            vehicle.steering=0
 
                 if pressed[pygame.K_t] and presscount<=1000:
                     if 0<presscount<=999:
@@ -325,10 +324,10 @@ class Game:
                         print(f'True : {truecount} False : {falsecount}')
                         time.sleep(0.2)
                         self.done=True
-                self.step(action,car)
-                nextvalid,rear_count=car.update(dt,self.util.image,type=self.vehicle,rear_count=rear_count)
+                self.step(action,vehicle)
+                nextvalid,rear_count=vehicle.update(dt,self.util.image,type=self.vehicle_type,rear_count=rear_count)
 
-                same_check_list.append(np.array(car.position))
+                same_check_list.append(np.array(vehicle.position))
                 if (nextvalid!=1 and nextvalid!=0):
                     self.done=True
                 if nextvalid==0:
@@ -345,22 +344,22 @@ class Game:
                     print(f'True: {truecount} | False: {falsecount}')
 
                 # Current State by Image
-                next_state=self.util.get_instant_image(car.position,car.angle,car.carwidth,car.carlength,self.scope_image_size,self.scope_image_resize)
+                next_state=self.util.get_instant_image(vehicle.position,vehicle.angle,vehicle.carwidth,vehicle.carlength,self.scope_image_size,self.scope_image_resize)
                 next_state=next_state.flatten()
                 step_count += 1
                 # Drawing
                 self.screen.fill((0, 0, 0))
-                rotated = pygame.transform.rotate(car_image, car.angle)
+                rotated = pygame.transform.rotate(car_image, vehicle.angle)
                 rect = rotated.get_rect()
                 self.screen.blit(road_image,(0,0))
                 
-                # if [pygame.transform.rotate(stack_image,car.angle),car.position,car.angle] not in stack_list:
-                #     stack_list+=[[pygame.transform.rotate(stack_image,car.angle),car.position,car.angle]]
+                # if [pygame.transform.rotate(stack_image,vehicle.angle),vehicle.position,vehicle.angle] not in stack_list:
+                #     stack_list+=[[pygame.transform.rotate(stack_image,vehicle.angle),vehicle.position,vehicle.angle]]
                 # for element in stack_list:
                 #     self.screen.blit(element[0], element[1] * ppu - (element[0].get_rect().width / 2, element[0].get_rect().height / 2))
                 
                 # for lidar sensor
-                # pygame.draw.aaline(self.screen, (0,0,255), [car.position[0],car.position[1]], [front_lidar[0],front_lidar[1]], 5)
+                # pygame.draw.aaline(self.screen, (0,0,255), [vehicle.position[0],vehicle.position[1]], [front_lidar[0],front_lidar[1]], 5)
                 # pygame.draw.circle(self.screen,(0,255,0),[int(front_lidar[0]),int(front_lidar[1])],5)
                 # pygame.draw.circle(self.screen,(0,255,0),[int(carfront[0]),int(carfront[1])],5)
                 
@@ -371,7 +370,7 @@ class Game:
                 textRectObj.center = (100,30)
                 self.screen.blit(textSurfaceObj, textRectObj) 
 
-                self.screen.blit(rotated, car.position * ppu - (rect.width / 2, rect.height / 2)) 
+                self.screen.blit(rotated, vehicle.position * ppu - (rect.width / 2, rect.height / 2)) 
                 pygame.display.flip()
                 #print(time.time()-timemarker,len(result))
                 #self.clock.tick(self.ticks)
