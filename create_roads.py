@@ -38,7 +38,7 @@ def check_edge(image):
             if first_start_idx == 0:
                 first_start_idx = idx
         if pt == 0 and prev !=0:
-            if idx - start_idx > 200:
+            if idx - start_idx > 300 or idx - start_idx < 100:
                 return False
             cluster+=1
         prev = pt
@@ -48,7 +48,7 @@ def check_edge(image):
             idx = len(edge) - 1 + first_start_idx
         else:
             idx = len(edge) - 1
-        if idx - start_idx > 200:
+        if idx - start_idx > 300 or idx - start_idx < 100:
             return False
 
     # num of cluster must be 2
@@ -73,7 +73,7 @@ def get_random_endpoint(start_point, pre_direction, length=None):
         angle = np.arccos(dot_product)
     if length is None:
         # random line length
-        length = random.randint(50,400)
+        length = random.randint(50,300)
     end_point = np.array([int(start_point[0] + direction[0]*length), int(start_point[1] + direction[1]*length)])
     return end_point, direction
 
@@ -111,7 +111,7 @@ if __name__=='__main__':
     for i in range(100):
         thickness = 120
         image = generate_random_image(thickness)
-        cv2.imshow('image', image)
+        cv2.imshow('result', image)
         key = cv2.waitKey(0)
         if key == ord('q'):
             cv2.destroyAllWindows()
