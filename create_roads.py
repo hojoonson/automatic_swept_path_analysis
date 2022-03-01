@@ -64,6 +64,7 @@ def get_random_endpoint(start_point, pre_direction, length=None):
     direction = (direction_x, direction_y)
     dot_product = np.dot(pre_direction, direction)
     angle = np.arccos(dot_product)
+    # degree between 30 and 120
     while not (30 < math.degrees(angle) < 120):
         direction_x = random.uniform(-1,1)
         direction_y = random_sign() * math.sqrt((1-direction_x**2))
@@ -71,6 +72,7 @@ def get_random_endpoint(start_point, pre_direction, length=None):
         dot_product = np.dot(pre_direction, direction)
         angle = np.arccos(dot_product)
     if length is None:
+        # random line length
         length = random.randint(50,400)
     end_point = np.array([int(start_point[0] + direction[0]*length), int(start_point[1] + direction[1]*length)])
     return end_point, direction
@@ -91,6 +93,7 @@ def generate_random_image(thickness=None):
         if (end_point[0]<0 or end_point[0]>600) or (end_point[1]<0 or end_point[1]>600):
             break
     else:
+        # make definately finish by set length=1000
         start_point = end_point
         end_point, direction = get_random_endpoint(start_point, direction, length=1000)
         pts = np.vstack([pts,end_point])
