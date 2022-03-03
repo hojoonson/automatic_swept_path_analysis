@@ -75,7 +75,8 @@ class Simulation:
     def __init__(self):
         self.vehicle_name = 'Scherule'
         self.vehicle_type='spmt'
-        label_path=os.path.join('data','train','trainlabels',f'{self.vehicle_name}_trainlabels.txt')
+        label_path='./generation_result/2022-03-04_00:14:23.607420/manual_labelling_result/Scherule_spmt_label_2022-03-04 00:14:43.438936.txt'
+        # label_path=os.path.join('data','train','trainlabels',f'{self.vehicle_name}_trainlabels.txt')
         path_list=[]
         with open(label_path,'r') as f:
             pathdata = f.readlines()
@@ -90,6 +91,7 @@ class Simulation:
                     'gt': splited[3],
                     'correct': '0' == splited[3]
                 })
+        random.shuffle(path_list)
         self.roadimage_path=path_list
         print(self.roadimage_path)
         self.util=utility()
