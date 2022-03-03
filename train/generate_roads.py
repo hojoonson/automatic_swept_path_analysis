@@ -114,10 +114,10 @@ if __name__=='__main__':
     os.makedirs(save_path, exist_ok=True)
     save_path = os.path.join(save_path, str(datetime.datetime.now()).replace(' ','_'))
     os.makedirs(save_path, exist_ok=True)
-    for i in range(3):
-        thickness = int(120 + i*10)
+    for i in range(2):
+        thickness = int(110 + i*10)
         print(thickness)
-        for j in tqdm.tqdm(range(1000)):
+        for j in tqdm.tqdm(range(50)):
             image = generate_random_image(thickness)
             image_path = os.path.join(save_path, f'{thickness}_{str(j).zfill(4)}.png')
             label_path = os.path.join(save_path, 'label_before_manual_labelling.txt')
