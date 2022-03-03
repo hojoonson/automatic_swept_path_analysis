@@ -66,7 +66,6 @@ class Game:
         stack_image.fill(gray)
         ppu = 1   
 
-        logger.info('FLAGS configure.')
         # store the previous observations in replay memory
         global_step = 1
         stack_list=[[pygame.transform.rotate(stack_image,vehicle.angle),vehicle.position,vehicle.angle]]
