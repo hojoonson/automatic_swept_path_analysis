@@ -1,5 +1,4 @@
 from utility import utility, Vehicle
-from collections import deque
 import logging
 import random
 import os
@@ -7,7 +6,6 @@ import time
 import pygame
 import cv2
 import datetime
-import numpy as np
 from operator import itemgetter
 from pygame.locals import HWSURFACE, DOUBLEBUF
 
