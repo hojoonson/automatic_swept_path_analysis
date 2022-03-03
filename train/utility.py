@@ -362,3 +362,103 @@ class Vehicle:
                 rear_count = 0
                 self.rearvalid = 0
             return 1, rear_count
+
+
+    def step(self, action):
+        if self.vehicle=='car':
+            car_steering=self.car_steering
+            if self.rearvalid==0:
+                if action==0:
+                    self.velocity.y= self.car_velocity
+                    self.steering = 0
+                elif action==1:
+                    self.velocity.y = self.car_velocity
+                    self.steering = car_steering
+                elif action==2:
+                    self.velocity.y= self.car_velocity
+                    self.steering = -car_steering
+                elif action==3:
+                    self.velocity.y= -self.car_velocity
+                    self.steering = 0
+                elif action==4:
+                    self.velocity.y = -self.car_velocity
+                    self.steering = car_steering
+                elif action==5:
+                    self.velocity.y= -self.car_velocity
+                    self.steering = -car_steering
+            if self.rearvalid==1:
+                if action==0:
+                    self.velocity.y= self.car_velocity
+                    self.steering = 0
+                elif action==1:
+                    self.velocity.y = self.car_velocity
+                    self.steering = car_steering
+                elif action==2:
+                    self.velocity.y= self.car_velocity
+                    self.steering = -car_steering
+                elif action==3:
+                    self.velocity.y= -self.car_velocity
+                    self.steering = 0
+                elif action==4:
+                    self.velocity.y = -self.car_velocity
+                    self.steering = car_steering
+                elif action==5:
+                    self.velocity.y= -self.car_velocity
+                    self.steering = -car_steering
+        elif self.vehicle=='spmt':
+            if action==0:
+                self.velocity.x=0
+                self.velocity.y= self.car_velocity
+                self.steering = 0
+            elif action==1:
+                self.velocity.x=-self.car_velocity
+                self.velocity.y= self.car_velocity
+                self.steering=0
+            elif action==2:
+                self.velocity.x= self.car_velocity
+                self.velocity.y= self.car_velocity
+                self.steering=0
+            elif action==3:
+                self.velocity.x=0
+                self.velocity.y=-self.car_velocity
+                self.steering=0
+            elif action==4:
+                self.velocity.x=-self.car_velocity
+                self.velocity.y=-self.car_velocity
+                self.steering=0
+            elif action==5:
+                self.velocity.x= self.car_velocity
+                self.velocity.y=-self.car_velocity
+                self.steering=0
+            elif action==6:
+                self.velocity.x=0
+                self.velocity.y=0
+                self.steering = 1
+            elif action==7:
+                self.velocity.x=0
+                self.velocity.y=0
+                self.steering = -1
+            elif action==8:
+                self.velocity.x=-self.car_velocity
+                self.velocity.y= 0
+                self.steering=0
+            elif action==9:
+                self.velocity.x= self.car_velocity
+                self.velocity.y= 0
+                self.steering=0
+            elif action==10:
+                self.velocity.x=0
+                self.velocity.y=self.car_velocity
+                self.steering = 1
+            elif action==11:
+                self.velocity.x=0
+                self.velocity.y=self.car_velocity
+                self.steering = -1
+            elif action==12:
+                self.velocity.x= 0
+                self.velocity.y=-self.car_velocity
+                self.steering= 1
+            elif action==13:
+                self.velocity.x= 0
+                self.velocity.y= -self.car_velocity
+                self.steering= -1        

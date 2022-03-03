@@ -2,12 +2,13 @@ from utility import utility, Vehicle
 from collections import deque
 import logging
 import random
-import glob
 import os
 import time
 import pygame
 import cv2
+import datetime
 import numpy as np
+from operator import itemgetter
 from pygame.locals import HWSURFACE, DOUBLEBUF
 
 os.environ['CUDA_DEVICE_ORDER']='PCI_BUS_ID'
@@ -20,132 +21,39 @@ max_episode_count = 10
 
 class Game:
     def __init__(self):
-        self.roadimage_path=glob.glob('./manual_test_image/*.png')
-        self.roadimage_path.sort()
+        label_path=os.path.join('sample_data','sample_label.txt')
+        self.vehicle_name='Scherule'
+        self.vehicle_type='spmt'
+        self.save_path=os.path.join(os.path.dirname(label_path),
+                                    f'{self.vehicle_name}_{self.vehicle_type}_label_{str(datetime.datetime.now())}.txt')
+        path_list=[]
+        with open(label_path,'r') as f:
+            pathdata = f.readlines()
+            for element in pathdata:
+                splited = element.split(' ')
+                path_list.append({
+                    'image_path': splited[0],
+                    'startx': float(splited[1]),
+                    'starty': float(splited[2])
+                })
+        self.roadimage_path=sorted(path_list, key=itemgetter('image_path'))
         self.util=utility()
         self.random_candidate=2
         self.map_updatecount=1
-        self.util.imagefile=self.roadimage_path[0]                    
+        self.util.imagefile=self.roadimage_path[0]['image_path']
         pygame.init()
         pygame.display.set_caption('Swept Path Analysis')
-        self.startx=295.5
-        self.starty=600
+        self.startx=self.roadimage_path[0]['startx']
+        self.starty=self.roadimage_path[0]['starty']
         self.startangle=0
         self.width = 600
         self.height = 600
         self.screen = pygame.display.set_mode((self.width, self.height), HWSURFACE | DOUBLEBUF)
         self.clock = pygame.time.Clock()
         self.ticks = 1000
-        self.vehicle_name='Scherule'
-        self.vehicle_type='spmt'
         self.scope_image_size=300
         self.scope_image_resize=64
-        #spmt : 5
-        #car : 3
     
-    def step(self, action, vehicle):
-        reward=0
-        #Mack Trucks TerraPro Low Entry 4x2 LEU612
-        #car_steering=39.16
-        #Pantechnicon_Removals_Van
-        if vehicle.vehicle=='car':
-            car_steering=vehicle.car_steering
-            if vehicle.rearvalid==0:
-                if action==0:
-                    vehicle.velocity.y= vehicle.car_velocity
-                    vehicle.steering = 0
-                elif action==1:
-                    vehicle.velocity.y = vehicle.car_velocity
-                    vehicle.steering = car_steering
-                elif action==2:
-                    vehicle.velocity.y= vehicle.car_velocity
-                    vehicle.steering = -car_steering
-                elif action==3:
-                    vehicle.velocity.y= -vehicle.car_velocity
-                    vehicle.steering = 0
-                elif action==4:
-                    vehicle.velocity.y = -vehicle.car_velocity
-                    vehicle.steering = car_steering
-                elif action==5:
-                    vehicle.velocity.y= -vehicle.car_velocity
-                    vehicle.steering = -car_steering
-            if vehicle.rearvalid==1:
-                if action==0:
-                    vehicle.velocity.y= vehicle.car_velocity
-                    vehicle.steering = 0
-                elif action==1:
-                    vehicle.velocity.y = vehicle.car_velocity
-                    vehicle.steering = car_steering
-                elif action==2:
-                    vehicle.velocity.y= vehicle.car_velocity
-                    vehicle.steering = -car_steering
-                elif action==3:
-                    vehicle.velocity.y= -vehicle.car_velocity
-                    vehicle.steering = 0
-                elif action==4:
-                    vehicle.velocity.y = -vehicle.car_velocity
-                    vehicle.steering = car_steering
-                elif action==5:
-                    vehicle.velocity.y= -vehicle.car_velocity
-                    vehicle.steering = -car_steering
-        elif vehicle.vehicle=='spmt':
-            if action==0:
-                vehicle.velocity.x=0
-                vehicle.velocity.y= vehicle.car_velocity
-                vehicle.steering = 0
-            elif action==1:
-                vehicle.velocity.x=-vehicle.car_velocity
-                vehicle.velocity.y= vehicle.car_velocity
-                vehicle.steering=0
-            elif action==2:
-                vehicle.velocity.x= vehicle.car_velocity
-                vehicle.velocity.y= vehicle.car_velocity
-                vehicle.steering=0
-            elif action==3:
-                vehicle.velocity.x=0
-                vehicle.velocity.y=-vehicle.car_velocity
-                vehicle.steering=0
-            elif action==4:
-                vehicle.velocity.x=-vehicle.car_velocity
-                vehicle.velocity.y=-vehicle.car_velocity
-                vehicle.steering=0
-            elif action==5:
-                vehicle.velocity.x= vehicle.car_velocity
-                vehicle.velocity.y=-vehicle.car_velocity
-                vehicle.steering=0
-            elif action==6:
-                vehicle.velocity.x=0
-                vehicle.velocity.y=0
-                vehicle.steering = 1
-            elif action==7:
-                vehicle.velocity.x=0
-                vehicle.velocity.y=0
-                vehicle.steering = -1
-            elif action==8:
-                vehicle.velocity.x=-vehicle.car_velocity
-                vehicle.velocity.y= 0
-                vehicle.steering=0
-            elif action==9:
-                vehicle.velocity.x= vehicle.car_velocity
-                vehicle.velocity.y= 0
-                vehicle.steering=0
-            elif action==10:
-                vehicle.velocity.x=0
-                vehicle.velocity.y=vehicle.car_velocity
-                vehicle.steering = 1
-            elif action==11:
-                vehicle.velocity.x=0
-                vehicle.velocity.y=vehicle.car_velocity
-                vehicle.steering = -1
-            elif action==12:
-                vehicle.velocity.x= 0
-                vehicle.velocity.y=-vehicle.car_velocity
-                vehicle.steering= 1
-            elif action==13:
-                vehicle.velocity.x= 0
-                vehicle.velocity.y= -vehicle.car_velocity
-                vehicle.steering= -1        
-
     def run(self):
         vehicle = Vehicle(x=self.startx,y=self.starty,angle=self.startangle,vehicle_type=self.vehicle_type, vehicle_name=self.vehicle_name)
         red = (255, 0, 0)
@@ -157,7 +65,6 @@ class Game:
         ppu = 1   
 
         logger.info('FLAGS configure.')
-        #logger.info(FLAGS.__flags)
         # store the previous observations in replay memory
         global_step = 1
         stack_list=[[pygame.transform.rotate(stack_image,vehicle.angle),vehicle.position,vehicle.angle]]
@@ -170,12 +77,15 @@ class Game:
         truecount=0
         falsecount=0
         for episode in range(max_episode_count):
-            print('New episode start!!')
+            logger.info('New episode start!!')
             if breakvalid==1:
                 pygame.quit()
                 break
             #set road image!
-            self.util.imagefile=self.roadimage_path[int(episode/self.map_updatecount)%len(self.roadimage_path)]
+            index=int(episode/self.map_updatecount)%len(self.roadimage_path)
+            self.util.imagefile=self.roadimage_path[index]['image_path']
+            self.startx=self.roadimage_path[index]['startx']
+            self.starty=self.roadimage_path[index]['starty']
             self.util.image=cv2.imread(self.util.imagefile)
             self.util.edge=cv2.Laplacian(self.util.image,cv2.CV_8U)
             self.util.edge=cv2.cvtColor(self.util.edge,cv2.COLOR_BGR2GRAY)
@@ -299,16 +209,17 @@ class Game:
                         continue
                     elif presscount==0:
                         presscount+=1
-                        print(self.util.imagefile, True)
-                        print(f'{os.path.splitext(self.util.imagefile)[0]}_1.png', True)
+                        logger.info(self.util.imagefile, True)
+                        logger.info(f'{os.path.splitext(self.util.imagefile)[0]}_1.png', True)
                         #trainlabel_element=open('./'+trainlabel_path+'/Sheurle_6axle_hojoon.txt','a+')
                         #trainlabel_element.write(self.util.imagefile+' 1 \n')
                         #trainlabel_element.write(self.util.imagefile.split('.png')[0]+'_1.png'+' 1 \n')
                         #trainlabel_element.close()
                         truecount+=1
-                        print(f'True : {truecount} False : {falsecount}')
+                        logger.info(f'True : {truecount} False : {falsecount}')
                         time.sleep(0.2)
                         self.done=True
+
                 elif pressed[pygame.K_f] and presscount<=1000:
                     if 0<presscount<=999:
                         presscount+=1
@@ -318,30 +229,26 @@ class Game:
                         continue
                     elif presscount==0:
                         presscount+=1
-                        print(self.util.imagefile, False)
-                        print(f'{os.path.splitext(self.util.imagefile)[0]}_1.png',False)
+                        logger.info(self.util.imagefile, False)
+                        logger.info(f'{os.path.splitext(self.util.imagefile)[0]}_1.png',False)
                         falsecount+=1
-                        print(f'True : {truecount} False : {falsecount}')
+                        logger.info(f'True : {truecount} False : {falsecount}')
                         time.sleep(0.2)
                         self.done=True
-                self.step(action,vehicle)
+                vehicle.step(action)
                 nextvalid,rear_count=vehicle.update(dt,self.util.image,type=self.vehicle_type,rear_count=rear_count)
 
-                same_check_list.append(np.array(vehicle.position))
                 if (nextvalid!=1 and nextvalid!=0):
                     self.done=True
-                if nextvalid==0:
-                    #print('Collision!!!')
-                    reward=-0.4
                 elif nextvalid==2:
-                    print(self.util.imagefile, True)
-                    print(f'{os.path.splitext(self.util.imagefile)[0]}_1.png', True)
+                    logger.info(self.util.imagefile, True)
+                    logger.info(f'{os.path.splitext(self.util.imagefile)[0]}_1.png', True)
                     #trainlabel_element=open('./'+trainlabel_path+'/Sheurle_6axle_hojoon.txt','a+')
                     #trainlabel_element.write(self.util.imagefile+' 1 \n')
                     #trainlabel_element.write(self.util.imagefile.split('.png')[0]+'_1.png'+' 1 \n')
                     #trainlabel_element.close()
                     truecount+=1
-                    print(f'True: {truecount} | False: {falsecount}')
+                    logger.info(f'True: {truecount} | False: {falsecount}')
 
                 # Current State by Image
                 next_state=self.util.get_instant_image(vehicle.position,vehicle.angle,vehicle.carwidth,vehicle.carlength,self.scope_image_size,self.scope_image_resize)
@@ -353,15 +260,8 @@ class Game:
                 rect = rotated.get_rect()
                 self.screen.blit(road_image,(0,0))
                 
-                # if [pygame.transform.rotate(stack_image,vehicle.angle),vehicle.position,vehicle.angle] not in stack_list:
-                #     stack_list+=[[pygame.transform.rotate(stack_image,vehicle.angle),vehicle.position,vehicle.angle]]
-                # for element in stack_list:
-                #     self.screen.blit(element[0], element[1] * ppu - (element[0].get_rect().width / 2, element[0].get_rect().height / 2))
-                
-                # for lidar sensor
-                # pygame.draw.aaline(self.screen, (0,0,255), [vehicle.position[0],vehicle.position[1]], [front_lidar[0],front_lidar[1]], 5)
-                # pygame.draw.circle(self.screen,(0,255,0),[int(front_lidar[0]),int(front_lidar[1])],5)
-                # pygame.draw.circle(self.screen,(0,255,0),[int(carfront[0]),int(carfront[1])],5)
+                element = [pygame.transform.rotate(stack_image,vehicle.angle),vehicle.position,vehicle.angle]
+                road_image.blit(element[0], element[1] * ppu - (element[0].get_rect().width / 2, element[0].get_rect().height / 2))
                 
                 '''writing episode'''
                 fontObj = pygame.font.Font('./font/times-new-roman.ttf', 30)
@@ -372,8 +272,6 @@ class Game:
 
                 self.screen.blit(rotated, vehicle.position * ppu - (rect.width / 2, rect.height / 2)) 
                 pygame.display.flip()
-                #print(time.time()-timemarker,len(result))
-                #self.clock.tick(self.ticks)
                 global_step+=1
 if __name__ == '__main__':
     game = Game()
