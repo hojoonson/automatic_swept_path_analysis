@@ -17,15 +17,15 @@ os.environ['CUDA_VISIBLE_DEVICES']='-1'
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
-max_episode_count = 10
 
 class Game:
     def __init__(self):
-        label_path=os.path.join('sample_data','sample_label.txt')
+        label_path=os.path.join('sample_data','before_manual_labelling.txt')
         self.vehicle_name='Scherule'
         self.vehicle_type='spmt'
-        self.save_path=os.path.join(os.path.dirname(label_path),
-                                    f'{self.vehicle_name}_{self.vehicle_type}_label_{str(datetime.datetime.now())}.txt')
+        save_path=os.path.join(os.path.dirname(label_path),'manual_labelling_result')
+        os.makedirs(save_path, exist_ok=True)
+        self.save_path=os.path.join(save_path,f'{self.vehicle_name}_{self.vehicle_type}_label_{str(datetime.datetime.now())}.txt')
         path_list=[]
         with open(label_path,'r') as f:
             pathdata = f.readlines()
@@ -36,7 +36,9 @@ class Game:
                     'startx': float(splited[1]),
                     'starty': float(splited[2])
                 })
+        self.max_episode_count = len(path_list)
         self.roadimage_path=sorted(path_list, key=itemgetter('image_path'))
+        
         self.util=utility()
         self.random_candidate=2
         self.map_updatecount=1
@@ -76,21 +78,20 @@ class Game:
 
         truecount=0
         falsecount=0
-        for episode in range(max_episode_count):
-            logger.info('New episode start!!')
+        for episode in range(self.max_episode_count):
             if breakvalid==1:
                 pygame.quit()
                 break
             #set road image!
-            index=int(episode/self.map_updatecount)%len(self.roadimage_path)
-            self.util.imagefile=self.roadimage_path[index]['image_path']
-            self.startx=self.roadimage_path[index]['startx']
-            self.starty=self.roadimage_path[index]['starty']
+            self.util.imagefile=self.roadimage_path[episode]['image_path']
+            self.startx=self.roadimage_path[episode]['startx']
+            self.starty=self.roadimage_path[episode]['starty']
             self.util.image=cv2.imread(self.util.imagefile)
             self.util.edge=cv2.Laplacian(self.util.image,cv2.CV_8U)
             self.util.edge=cv2.cvtColor(self.util.edge,cv2.COLOR_BGR2GRAY)
             road_image=pygame.image.load(self.util.imagefile)
-            
+            logger.info(f'New episode start. Load {self.util.imagefile} [{episode+1} / {self.max_episode_count}]')
+
             #define epcilon. it decay from 0.9 to 0.2
             e = 1. / ((episode / 20) + 1)
             step_count = 0
@@ -108,9 +109,7 @@ class Game:
             nextvalid=1
             stack_list=[[pygame.transform.rotate(stack_image,vehicle.angle),vehicle.position,vehicle.angle]]
             self.done = False
-
             
-            same_check_list=deque(maxlen=50)
             rear_count=0
             while not self.done:
                 #dt = self.clock.get_time() / 1000
@@ -209,14 +208,10 @@ class Game:
                         continue
                     elif presscount==0:
                         presscount+=1
-                        logger.info(self.util.imagefile, True)
-                        logger.info(f'{os.path.splitext(self.util.imagefile)[0]}_1.png', True)
-                        #trainlabel_element=open('./'+trainlabel_path+'/Sheurle_6axle_hojoon.txt','a+')
-                        #trainlabel_element.write(self.util.imagefile+' 1 \n')
-                        #trainlabel_element.write(self.util.imagefile.split('.png')[0]+'_1.png'+' 1 \n')
-                        #trainlabel_element.close()
+                        logger.info(f'{self.util.imagefile} True')
+                        with open(self.save_path,'a') as f:
+                            f.write(f'{self.util.imagefile} {self.startx} {self.starty} 1 \n')
                         truecount+=1
-                        logger.info(f'True : {truecount} False : {falsecount}')
                         time.sleep(0.2)
                         self.done=True
 
@@ -229,26 +224,22 @@ class Game:
                         continue
                     elif presscount==0:
                         presscount+=1
-                        logger.info(self.util.imagefile, False)
-                        logger.info(f'{os.path.splitext(self.util.imagefile)[0]}_1.png',False)
+                        logger.info(f'{self.util.imagefile} False')
+                        with open(self.save_path,'a') as f:
+                            f.write(f'{self.util.imagefile} {self.startx} {self.starty} 0 \n')
                         falsecount+=1
-                        logger.info(f'True : {truecount} False : {falsecount}')
                         time.sleep(0.2)
                         self.done=True
                 vehicle.step(action)
                 nextvalid,rear_count=vehicle.update(dt,self.util.image,type=self.vehicle_type,rear_count=rear_count)
 
-                if (nextvalid!=1 and nextvalid!=0):
-                    self.done=True
-                elif nextvalid==2:
-                    logger.info(self.util.imagefile, True)
-                    logger.info(f'{os.path.splitext(self.util.imagefile)[0]}_1.png', True)
-                    #trainlabel_element=open('./'+trainlabel_path+'/Sheurle_6axle_hojoon.txt','a+')
-                    #trainlabel_element.write(self.util.imagefile+' 1 \n')
-                    #trainlabel_element.write(self.util.imagefile.split('.png')[0]+'_1.png'+' 1 \n')
-                    #trainlabel_element.close()
+                if nextvalid==2:
+                    logger.info(f'{self.util.imagefile} True')
+                    with open(self.save_path,'a') as f:
+                        f.write(f'{self.util.imagefile} {self.startx} {self.starty} 1 \n')
                     truecount+=1
-                    logger.info(f'True: {truecount} | False: {falsecount}')
+                    self.done=True
+
 
                 # Current State by Image
                 next_state=self.util.get_instant_image(vehicle.position,vehicle.angle,vehicle.carwidth,vehicle.carlength,self.scope_image_size,self.scope_image_resize)
@@ -260,6 +251,7 @@ class Game:
                 rect = rotated.get_rect()
                 self.screen.blit(road_image,(0,0))
                 
+                # Drawing Racingline
                 element = [pygame.transform.rotate(stack_image,vehicle.angle),vehicle.position,vehicle.angle]
                 road_image.blit(element[0], element[1] * ppu - (element[0].get_rect().width / 2, element[0].get_rect().height / 2))
                 
@@ -273,6 +265,9 @@ class Game:
                 self.screen.blit(rotated, vehicle.position * ppu - (rect.width / 2, rect.height / 2)) 
                 pygame.display.flip()
                 global_step+=1
+                if self.done:
+                    logger.info(f'True : {truecount} False : {falsecount}')
+
 if __name__ == '__main__':
     game = Game()
     game.run()

@@ -1,12 +1,14 @@
 *.pyc
-*.jpg
-*.png
 *.ckpt
+data/test/testimages
+data/train/trainimages
+images
 saved_models
 checkpoints
 classification_result
 train_result
 automatic_labelling_result
+sample_data/manual_labelling_result
 result_log
 semiresult
 legacy
