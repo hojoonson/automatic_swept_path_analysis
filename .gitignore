@@ -1,0 +1,16 @@
+*.pyc
+*.ckpt
+train/data/test/testimages
+train/data/train/trainimages
+train/images
+train/saved_models
+train/checkpoints
+train/classification_result
+train/train_result
+train/automatic_labelling_result
+train/sample_data/manual_labelling_result
+train/manual_labelling_data
+train/result_log
+train/semiresult
+train/legacy
+train/generation_result

@@ -1,7 +1,10 @@
 import cv2
+import os
 import numpy as np
 import random
 import math
+import tqdm
+import datetime
 
 white = (255,255,255)
 black = (0,0,0)
@@ -100,19 +103,29 @@ def generate_random_image(thickness=None):
     for_check_contours = np.copy(image)
     cv2.polylines(img=image, pts=[pts], isClosed=False, color=white, thickness=thickness)
     cv2.polylines(img=for_check_contours, pts=[pts], isClosed=False, color=white, thickness=5)
-    cv2.imshow('before_validation', cv2.resize(np.hstack([for_check_contours,image]),(600,300)))
-    cv2.waitKey(0)
+    # cv2.imshow('before_validation', cv2.resize(np.hstack([for_check_contours,image]),(600,300)))
+    # cv2.waitKey(0)
     if not (check_contours(for_check_contours) and check_contours(np.copy(image)) and check_edge(np.copy(image))):
-        print('Invalid Road Image')
         image = generate_random_image(thickness)
     return image
 
 if __name__=='__main__':
-    for i in range(100):
-        thickness = 120
-        image = generate_random_image(thickness)
-        cv2.imshow('result', image)
-        key = cv2.waitKey(0)
-        if key == ord('q'):
-            cv2.destroyAllWindows()
-            break
+    save_path = 'generation_result'
+    os.makedirs(save_path, exist_ok=True)
+    save_path = os.path.join(save_path, str(datetime.datetime.now()).replace(' ','_'))
+    os.makedirs(save_path, exist_ok=True)
+    for i in range(3):
+        thickness = int(120 + i*10)
+        print(thickness)
+        for j in tqdm.tqdm(range(1000)):
+            image = generate_random_image(thickness)
+            image_path = os.path.join(save_path, f'{thickness}_{str(j).zfill(4)}.png')
+            label_path = os.path.join(save_path, 'label_before_manual_labelling.txt')
+            cv2.imwrite(image_path, image)
+            with open(label_path, 'a') as f:
+                f.write(f'{image_path} 300 600 \n')
+            # cv2.imshow('result', image)
+            # key = cv2.waitKey(1)
+            # if key == ord('q'):
+            #     cv2.destroyAllWindows()
+            #     break
