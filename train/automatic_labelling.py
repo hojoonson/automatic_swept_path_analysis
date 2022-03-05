@@ -96,7 +96,8 @@ class Simulation:
         print(self.roadimage_path)
         self.util=utility()
         self.random_candidate=3
-        self.map_updatecount=2
+        self.map_updatecount=1
+        self.multiple = 20
         self.util.imagefile=self.roadimage_path[0]['image_path']
         pygame.init()
         pygame.display.set_caption('Swept Path Analysis')
@@ -164,7 +165,7 @@ class Simulation:
             for episode in range(FLAGS.max_episode_count):
                 #set road image!
                 index = int(episode/self.map_updatecount)%len(self.roadimage_path)
-                if self.roadimage_path[index]['retry'] > self.map_updatecount * 5:
+                if self.roadimage_path[index]['retry'] > self.map_updatecount * self.multiple:
                     continue
                 self.util.imagefile=self.roadimage_path[index]['image_path']
                 self.startx=self.roadimage_path[index]['startx']
