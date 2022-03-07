@@ -149,11 +149,12 @@ def select_cnn_model(model_name, weights=None, input_shape=(600, 600, 3), classe
     if model_name == 'NASNetMobile':
         model = keras_apps.nasnet.NASNetMobile(**args)
 
-    inputs = Input(shape=input_shape)
-    x = model(inputs, training=True)
-    outputs = layers.Dense(1, activation='sigmoid')(x)
-    output_model = Model(inputs, outputs)
-    output_model.summary()
+    # inputs = Input(shape=input_shape)
+    # x = model(inputs, training=True)
+    # outputs = layers.Dense(1, activation='sigmoid')(x)
+    # output_model = Model(inputs, outputs)
+    # output_model.summary()
+    output_model = model
     return output_model
 
 

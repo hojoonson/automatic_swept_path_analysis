@@ -20,7 +20,7 @@ class DataGenerator(Sequence):
         Xs, Ys = [], []
         for i in range(len(image_batch)):
             X = cv2.resize(cv2.imread(image_batch[i]['image_path']), self.image_size)
-            Y = 1 if image_batch[i]['gt'] == '1' else 0
+            Y = [1,0] if image_batch[i]['gt'] == '1' else [0,1]
             Xs.append(X)
             Ys.append(Y)
 
@@ -31,13 +31,13 @@ class DataGenerator(Sequence):
 
 def lr_schedule(epoch):
     lr = 1e-3*0.5
-    if epoch > 160:
+    if epoch > 80:
         lr *= 0.5e-3
-    elif epoch > 120:
-        lr *= 1e-3
-    elif epoch > 90:
-        lr *= 1e-2
     elif epoch > 60:
+        lr *= 1e-3
+    elif epoch > 30:
+        lr *= 1e-2
+    elif epoch > 10:
         lr *= 1e-1
     print('Learning rate: ', lr)
     return lr
