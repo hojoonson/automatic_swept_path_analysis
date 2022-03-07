@@ -125,6 +125,7 @@ class Game:
                 vehicle.velocity.y=0
                 vehicle.steering=0
                 if pressed[pygame.K_c]:
+                    logger.info('Save screenshot of current image')
                     pygame.image.save(self.screen, 'screenshot.png')
                 if pressed[pygame.K_UP]:
                     action=0

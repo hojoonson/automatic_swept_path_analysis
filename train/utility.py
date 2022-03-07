@@ -13,7 +13,7 @@ import operator
 
 class utility():
     def __init__(self):
-        self.imagefile = './sample_data/train0'
+        self.imagefile = './sample_data/train0.png'
         self.image = cv2.imread(self.imagefile)
         self.edge = cv2.Laplacian(self.image, cv2.CV_8U)
         self.edge = cv2.cvtColor(self.edge, cv2.COLOR_BGR2GRAY)
