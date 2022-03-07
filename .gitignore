@@ -6,7 +6,6 @@ train/data/train/trainimages
 train/images
 train/cnn_result_model
 train/checkpoints
-train/classification_result
 train/train_result
 train/automatic_labelling_result
 train/sample_data/manual_labelling_result

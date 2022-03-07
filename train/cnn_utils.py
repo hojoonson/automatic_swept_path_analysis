@@ -1,44 +1,33 @@
-from sklearn.metrics import (roc_auc_score, precision_score, recall_score, f1_score,
-                             cohen_kappa_score, confusion_matrix, accuracy_score)
-from tensorflow.keras.callbacks import Callback
+from tensorflow.keras.utils import Sequence
+import numpy as np
+import cv2
+import math
+class DataGenerator(Sequence):
+    def __init__(self,
+                 label_list: list,
+                 batch_size: int,
+                 image_size: tuple) -> None:
+        self.label_list = label_list
+        self.batch_size = batch_size
+        self.image_size = image_size
 
+    def __len__(self):
+        return math.ceil(len(self.label_list) / self.batch_size)
 
-class SkMetrics(Callback):
-    def on_epoch_end(self, epoch, logs={}):
-        loss = self.model.evaluate(self.validation_data[0], self.validation_data[1])[0]
-        yhat_probs = self.model.predict(self.validation_data[0])
-        yhat_probs = [x[0] for x in yhat_probs]
-        yhat_classes = [0 if x < 0.5 else 1 for x in yhat_probs]
-        testy = self.validation_data[1]
-        print(yhat_classes[:30])
-        print([x[0] for x in self.validation_data[1]][:30])
-        # accuracy: (tp + tn) / (p + n)
-        accuracy = accuracy_score(testy, yhat_classes)
-        print('Accuracy: %f' % accuracy)
-        print('Loss: %f' % loss)
-        # precision tp / (tp + fp)
-        precision = precision_score(testy, yhat_classes)
-        print('Precision: %f' % precision)
-        # recall: tp / (tp + fn)
-        recall = recall_score(testy, yhat_classes)
-        print('Recall: %f' % recall)
-        # f1: 2 tp / (2 tp + fp + fn)
-        f1 = f1_score(testy, yhat_classes)
-        print('F1 score: %f' % f1)
-        # kappa
-        kappa = cohen_kappa_score(testy, yhat_classes)
-        print('Cohens kappa: %f' % kappa)
-        # ROC AUC
-        auc = roc_auc_score(testy, yhat_probs)
-        print('ROC AUC: %f' % auc)
-        # confusion matrix
-        matrix = confusion_matrix(testy, yhat_classes)
-        print(matrix)
-        # with open(csv_file_path, 'a') as f:
-        #     csvwriter = csv.writer(f)
-        #     csvwriter.writerow([accuracy, loss, precision, recall, f1, auc,
-        #                        matrix[0], matrix[1], matrix[2], matrix[3]])
+    def __getitem__(self, index):
+        image_batch = self.label_list[index * self.batch_size:(index + 1) * self.batch_size]
+        
+        Xs, Ys = [], []
+        for i in range(len(image_batch)):
+            X = cv2.resize(cv2.imread(image_batch[i]['image_path']), self.image_size)
+            Y = 1 if image_batch[i]['gt'] == '1' else 0
+            Xs.append(X)
+            Ys.append(Y)
 
+        Xs = np.array(Xs)
+        Ys = np.array(Ys)
+
+        return Xs, Ys
 
 def lr_schedule(epoch):
     lr = 1e-3*0.5

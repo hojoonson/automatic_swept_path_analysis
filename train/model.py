@@ -1,6 +1,6 @@
 import tensorflow as tf
 import tensorflow.keras.applications as keras_apps
-
+from tensorflow.keras import layers, Input, Model
 
 class MLPv1:
     def __init__(self, X: tf.compat.v1.placeholder, num_classes: int, frame_size: None, learning_rate=0.001) -> None:
@@ -92,7 +92,6 @@ def select_cnn_model(model_name, weights=None, input_shape=(600, 600, 3), classe
         'classes': classes,
         'include_top': True
     }
-    model = None
     if model_name == 'VGG16':
         model = keras_apps.vgg16.VGG16(**args, classifier_activation=classifier_activation)
     if model_name == 'VGG19':
@@ -150,9 +149,12 @@ def select_cnn_model(model_name, weights=None, input_shape=(600, 600, 3), classe
     if model_name == 'NASNetMobile':
         model = keras_apps.nasnet.NASNetMobile(**args)
 
-    if model is not None:
-        model.trainable = True
-    return model
+    inputs = Input(shape=input_shape)
+    x = model(inputs, training=True)
+    outputs = layers.Dense(1, activation='sigmoid')(x)
+    output_model = Model(inputs, outputs)
+    output_model.summary()
+    return output_model
 
 
 def test_load_cnn_models(model_list):
