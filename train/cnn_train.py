@@ -3,7 +3,7 @@ import numpy as np
 import os
 import csv
 import datetime
-from train_utils import lr_schedule, SkMetrics
+from cnn_utils import lr_schedule, SkMetrics
 from model import select_cnn_model, test_load_cnn_models
 
 # Prepare model model saving directory.
