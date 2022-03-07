@@ -4,7 +4,7 @@ train/screenshot.png
 train/data/test/testimages
 train/data/train/trainimages
 train/images
-train/saved_models
+train/cnn_result_model
 train/checkpoints
 train/classification_result
 train/train_result

@@ -7,7 +7,6 @@ from skimage.util import img_as_ubyte
 from math import tan, radians, degrees
 from pygame.math import Vector2
 from copy import deepcopy
-import glob
 import operator
 
 
@@ -263,15 +262,15 @@ class Vehicle:
         # car spec
         if vehicle_type == 'car':
             if vehicle_name == 'Mack_Trucks_TerraPro':
-                self.car_steering  = 39.16
-                self.scale=5
-                self.carwidth=7.950*self.scale
-                self.carlength=27.054*self.scale
-                self.curb_to_curb_r=24.000*self.scale
-                self.frontwheel_ratio=6.054/(self.carlength/self.scale)
-                self.rearwheel_ratio=(6.054+13.083)/(self.carlength/self.scale)
+                self.car_steering = 39.16
+                self.scale = 5
+                self.carwidth = 7.950*self.scale
+                self.carlength = 27.054*self.scale
+                self.curb_to_curb_r = 24.000*self.scale
+                self.frontwheel_ratio = 6.054/(self.carlength/self.scale)
+                self.rearwheel_ratio = (6.054+13.083)/(self.carlength/self.scale)
             elif vehicle_name == 'Pantechnicon_Removals_Van':
-                self.car_steering  = 36.91
+                self.car_steering = 36.91
                 self.scale = 5.6
                 self.carwidth = 8.202*self.scale
                 self.carlength = 36.089*self.scale
@@ -289,7 +288,6 @@ class Vehicle:
                 self.carwidth = 2.430*self.scale*3
                 self.carlength = 7.000*self.scale*3
 
-            
         self.car_velocity = -50
         self.vehicle = vehicle_type
         self.position = Vector2(x, y)
@@ -363,102 +361,101 @@ class Vehicle:
                 self.rearvalid = 0
             return 1, rear_count
 
-
     def step(self, action):
-        if self.vehicle=='car':
-            car_steering=self.car_steering
-            if self.rearvalid==0:
-                if action==0:
-                    self.velocity.y= self.car_velocity
+        if self.vehicle == 'car':
+            car_steering = self.car_steering
+            if self.rearvalid == 0:
+                if action == 0:
+                    self.velocity.y = self.car_velocity
                     self.steering = 0
-                elif action==1:
+                elif action == 1:
                     self.velocity.y = self.car_velocity
                     self.steering = car_steering
-                elif action==2:
-                    self.velocity.y= self.car_velocity
+                elif action == 2:
+                    self.velocity.y = self.car_velocity
                     self.steering = -car_steering
-                elif action==3:
-                    self.velocity.y= -self.car_velocity
+                elif action == 3:
+                    self.velocity.y = -self.car_velocity
                     self.steering = 0
-                elif action==4:
+                elif action == 4:
                     self.velocity.y = -self.car_velocity
                     self.steering = car_steering
-                elif action==5:
-                    self.velocity.y= -self.car_velocity
+                elif action == 5:
+                    self.velocity.y = -self.car_velocity
                     self.steering = -car_steering
-            if self.rearvalid==1:
-                if action==0:
-                    self.velocity.y= self.car_velocity
+            if self.rearvalid == 1:
+                if action == 0:
+                    self.velocity.y = self.car_velocity
                     self.steering = 0
-                elif action==1:
+                elif action == 1:
                     self.velocity.y = self.car_velocity
                     self.steering = car_steering
-                elif action==2:
-                    self.velocity.y= self.car_velocity
+                elif action == 2:
+                    self.velocity.y = self.car_velocity
                     self.steering = -car_steering
-                elif action==3:
-                    self.velocity.y= -self.car_velocity
+                elif action == 3:
+                    self.velocity.y = -self.car_velocity
                     self.steering = 0
-                elif action==4:
+                elif action == 4:
                     self.velocity.y = -self.car_velocity
                     self.steering = car_steering
-                elif action==5:
-                    self.velocity.y= -self.car_velocity
+                elif action == 5:
+                    self.velocity.y = -self.car_velocity
                     self.steering = -car_steering
-        elif self.vehicle=='spmt':
-            if action==0:
-                self.velocity.x=0
-                self.velocity.y= self.car_velocity
+        elif self.vehicle == 'spmt':
+            if action == 0:
+                self.velocity.x = 0
+                self.velocity.y = self.car_velocity
                 self.steering = 0
-            elif action==1:
-                self.velocity.x=-self.car_velocity
-                self.velocity.y= self.car_velocity
-                self.steering=0
-            elif action==2:
-                self.velocity.x= self.car_velocity
-                self.velocity.y= self.car_velocity
-                self.steering=0
-            elif action==3:
-                self.velocity.x=0
-                self.velocity.y=-self.car_velocity
-                self.steering=0
-            elif action==4:
-                self.velocity.x=-self.car_velocity
-                self.velocity.y=-self.car_velocity
-                self.steering=0
-            elif action==5:
-                self.velocity.x= self.car_velocity
-                self.velocity.y=-self.car_velocity
-                self.steering=0
-            elif action==6:
-                self.velocity.x=0
-                self.velocity.y=0
+            elif action == 1:
+                self.velocity.x = -self.car_velocity
+                self.velocity.y = self.car_velocity
+                self.steering = 0
+            elif action == 2:
+                self.velocity.x = self.car_velocity
+                self.velocity.y = self.car_velocity
+                self.steering = 0
+            elif action == 3:
+                self.velocity.x = 0
+                self.velocity.y = -self.car_velocity
+                self.steering = 0
+            elif action == 4:
+                self.velocity.x = -self.car_velocity
+                self.velocity.y = -self.car_velocity
+                self.steering = 0
+            elif action == 5:
+                self.velocity.x = self.car_velocity
+                self.velocity.y = -self.car_velocity
+                self.steering = 0
+            elif action == 6:
+                self.velocity.x = 0
+                self.velocity.y = 0
                 self.steering = 1
-            elif action==7:
-                self.velocity.x=0
-                self.velocity.y=0
+            elif action == 7:
+                self.velocity.x = 0
+                self.velocity.y = 0
                 self.steering = -1
-            elif action==8:
-                self.velocity.x=-self.car_velocity
-                self.velocity.y= 0
-                self.steering=0
-            elif action==9:
-                self.velocity.x= self.car_velocity
-                self.velocity.y= 0
-                self.steering=0
-            elif action==10:
-                self.velocity.x=0
-                self.velocity.y=self.car_velocity
+            elif action == 8:
+                self.velocity.x = -self.car_velocity
+                self.velocity.y = 0
+                self.steering = 0
+            elif action == 9:
+                self.velocity.x = self.car_velocity
+                self.velocity.y = 0
+                self.steering = 0
+            elif action == 10:
+                self.velocity.x = 0
+                self.velocity.y = self.car_velocity
                 self.steering = 1
-            elif action==11:
-                self.velocity.x=0
-                self.velocity.y=self.car_velocity
+            elif action == 11:
+                self.velocity.x = 0
+                self.velocity.y = self.car_velocity
                 self.steering = -1
-            elif action==12:
-                self.velocity.x= 0
-                self.velocity.y=-self.car_velocity
-                self.steering= 1
-            elif action==13:
-                self.velocity.x= 0
-                self.velocity.y= -self.car_velocity
-                self.steering= -1        
+            elif action == 12:
+                self.velocity.x = 0
+                self.velocity.y = -self.car_velocity
+                self.steering = 1
+            elif action == 13:
+                self.velocity.x = 0
+                self.velocity.y = -self.car_velocity
+                self.steering = -1

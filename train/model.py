@@ -1,4 +1,5 @@
 import tensorflow as tf
+import tensorflow.keras.applications as keras_apps
 
 
 class MLPv1:
@@ -34,9 +35,9 @@ class Custom_CNN_forimage_v1:
 
     def build_network(self) -> None:
         conv1 = tf.compat.v1.layers.conv2d(inputs=self.X, filters=16, kernel_size=[
-                                 8, 8], padding='SAME', activation=tf.nn.relu)
+            8, 8], padding='SAME', activation=tf.nn.relu)
         conv2 = tf.compat.v1.layers.conv2d(inputs=conv1, filters=32, kernel_size=[
-                                 4, 4], padding='SAME', activation=tf.nn.relu)
+            4, 4], padding='SAME', activation=tf.nn.relu)
         flat = tf.compat.v1.layers.flatten(conv2)
         net = tf.compat.v1.layers.dense(flat, 256)
         net = tf.compat.v1.layers.dense(net, self.num_classes)
@@ -59,17 +60,17 @@ class Custom_CNN_forimage_v2:
 
     def build_network(self) -> None:
         conv1 = tf.compat.v1.layers.conv2d(inputs=self.X, filters=32, kernel_size=[
-                                 3, 3], padding='SAME', activation=tf.nn.relu)
+            3, 3], padding='SAME', activation=tf.nn.relu)
         pool1 = tf.compat.v1.layers.max_pooling2d(inputs=conv1, pool_size=[
-                                        2, 2], strides=2, padding="SAME")
+            2, 2], strides=2, padding="SAME")
         conv2 = tf.compat.v1.layers.conv2d(inputs=pool1, filters=64, kernel_size=[
-                                 3, 3], padding='SAME', activation=tf.nn.relu)
+            3, 3], padding='SAME', activation=tf.nn.relu)
         pool2 = tf.compat.v1.layers.max_pooling2d(inputs=conv2, pool_size=[
-                                        2, 2], strides=2, padding="SAME")
+            2, 2], strides=2, padding="SAME")
         conv3 = tf.compat.v1.layers.conv2d(inputs=pool2, filters=64, kernel_size=[
-                                 3, 3], padding='SAME', activation=tf.nn.relu)
+            3, 3], padding='SAME', activation=tf.nn.relu)
         pool3 = tf.compat.v1.layers.max_pooling2d(inputs=conv3, pool_size=[
-                                        2, 2], strides=2, padding="SAME")
+            2, 2], strides=2, padding="SAME")
         flat = tf.compat.v1.layers.flatten(pool3)
         net = tf.compat.v1.layers.dense(flat, 512)
         net = tf.compat.v1.layers.dense(net, self.num_classes)
@@ -82,3 +83,80 @@ class Custom_CNN_forimage_v2:
 
         self.optimizer = tf.compat.v1.train.AdamOptimizer(
             learning_rate=self.learning_rate).minimize(self.loss)
+
+
+def select_cnn_model(model_name, weights=None, input_shape=(600, 600, 3), classes=2, classifier_activation='softmax'):
+    args = {
+        'weights': weights,
+        'input_shape': input_shape,
+        'classes': classes,
+        'include_top': True
+    }
+    model = None
+    if model_name == 'VGG16':
+        model = keras_apps.vgg16.VGG16(**args, classifier_activation=classifier_activation)
+    if model_name == 'VGG19':
+        model = keras_apps.vgg19.VGG19(**args, classifier_activation=classifier_activation)
+    if model_name == 'MobileNet':
+        model = keras_apps.mobilenet.MobileNet(**args, classifier_activation=classifier_activation)
+    if model_name == 'MobileNetV2':
+        model = keras_apps.mobilenet_v2.MobileNetV2(**args, classifier_activation=classifier_activation)
+    if model_name == 'MobileNetV3Large':
+        model = keras_apps.MobileNetV3Large(**args, classifier_activation=classifier_activation)
+    if model_name == 'MobileNetV3Small':
+        model = keras_apps.MobileNetV3Small(**args, classifier_activation=classifier_activation)
+    if model_name == 'DenseNet121':
+        model = keras_apps.densenet.DenseNet121(**args)
+    if model_name == 'DenseNet169':
+        model = keras_apps.densenet.DenseNet169(**args)
+    if model_name == 'DenseNet201':
+        model = keras_apps.densenet.DenseNet201(**args)
+    if model_name == 'ResNet50':
+        model = keras_apps.resnet50.ResNet50(**args, classifier_activation=classifier_activation)
+    if model_name == 'ResNet101':
+        model = keras_apps.resnet.ResNet101(**args, classifier_activation=classifier_activation)
+    if model_name == 'ResNet152':
+        model = keras_apps.resnet.ResNet152(**args, classifier_activation=classifier_activation)
+    if model_name == 'ResNet50V2':
+        model = keras_apps.resnet_v2.ResNet50V2(**args, classifier_activation=classifier_activation)
+    if model_name == 'ResNet101V2':
+        model = keras_apps.resnet_v2.ResNet101V2(**args, classifier_activation=classifier_activation)
+    if model_name == 'ResNet152V2':
+        model = keras_apps.resnet_v2.ResNet152V2(**args, classifier_activation=classifier_activation)
+    if model_name == 'InceptionV3':
+        model = keras_apps.inception_v3.InceptionV3(**args, classifier_activation=classifier_activation)
+    if model_name == 'InceptionResNetV2':
+        model = keras_apps.inception_resnet_v2.InceptionResNetV2(**args, classifier_activation=classifier_activation)
+    if model_name == 'EfficientNetB0':
+        model = keras_apps.efficientnet.EfficientNetB0(**args, classifier_activation=classifier_activation)
+    if model_name == 'EfficientNetB1':
+        model = keras_apps.efficientnet.EfficientNetB1(**args, classifier_activation=classifier_activation)
+    if model_name == 'EfficientNetB2':
+        model = keras_apps.efficientnet.EfficientNetB2(**args, classifier_activation=classifier_activation)
+    if model_name == 'EfficientNetB3':
+        model = keras_apps.efficientnet.EfficientNetB3(**args, classifier_activation=classifier_activation)
+    if model_name == 'EfficientNetB4':
+        model = keras_apps.efficientnet.EfficientNetB4(**args, classifier_activation=classifier_activation)
+    if model_name == 'EfficientNetB5':
+        model = keras_apps.efficientnet.EfficientNetB5(**args, classifier_activation=classifier_activation)
+    if model_name == 'EfficientNetB6':
+        model = keras_apps.efficientnet.EfficientNetB6(**args, classifier_activation=classifier_activation)
+    if model_name == 'EfficientNetB7':
+        model = keras_apps.efficientnet.EfficientNetB7(**args, classifier_activation=classifier_activation)
+    if model_name == 'Xception':
+        model = keras_apps.xception.Xception(**args, classifier_activation=classifier_activation)
+    if model_name == 'NASNetLarge':
+        model = keras_apps.nasnet.NASNetLarge(**args)
+    if model_name == 'NASNetMobile':
+        model = keras_apps.nasnet.NASNetMobile(**args)
+
+    if model is not None:
+        model.trainable = True
+    return model
+
+
+def test_load_cnn_models(model_list):
+    for model_name in model_list:
+        print(model_name)
+        model = select_cnn_model(model_name)
+        print(model.summary())
