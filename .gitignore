@@ -1,5 +1,6 @@
 *.pyc
 *.ckpt
+train/screenshot.png
 train/data/test/testimages
 train/data/train/trainimages
 train/images
