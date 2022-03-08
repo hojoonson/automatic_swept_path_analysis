@@ -86,11 +86,10 @@ class Custom_CNN_forimage_v2:
             learning_rate=self.learning_rate).minimize(self.loss)
 
 
-def select_cnn_model(model_name, weights=None, input_shape=(600, 600, 3), classes=1, classifier_activation='softmax'):
+def select_cnn_model(model_name, weights='imagenet', input_shape=(600, 600, 3), classifier_activation='softmax'):
     args = {
         'weights': weights,
         'input_shape': input_shape,
-        'classes': classes,
         'include_top': True
     }
     if model_name == 'VGG16':
@@ -150,17 +149,20 @@ def select_cnn_model(model_name, weights=None, input_shape=(600, 600, 3), classe
     if model_name == 'NASNetMobile':
         model = keras_apps.nasnet.NASNetMobile(**args)
 
-    # inputs = Input(shape=input_shape)
-    # x = model(inputs, training=True)
-    # outputs = layers.Dense(1, activation='sigmoid')(x)
-    # output_model = Model(inputs, outputs)
-    # output_model.summary()
-    output_model = model
+    # use imagenet backbone and add custom fully connected layer
+    inputs = Input(shape=input_shape)
+    x = model(inputs, training=True)
+    x = layers.Dense(512, activation='relu')(x)
+    x = layers.Dense(256, activation='relu')(x)
+    x = layers.Dense(64, activation='relu')(x)
+    x = layers.Dense(16, activation='relu')(x)
+    outputs = layers.Dense(1, activation='sigmoid')(x)
+    output_model = Model(inputs, outputs)
     return output_model
 
 
-def test_load_cnn_models(model_list):
+def test_load_cnn_models(model_list, input_shape=(600, 600, 3)):
     for model_name in model_list:
         print(model_name)
-        model = select_cnn_model(model_name)
+        model = select_cnn_model(model_name, input_shape=input_shape)
         print(model.summary())

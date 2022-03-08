@@ -27,14 +27,14 @@ save_dir = 'cnn_result_model'
 batch_size = 1
 epochs = 50
 input_shape = (224, 224, 3)
-test_model_list = False
+test_model_list = True
 label_path = 'automatic_labelling_result/Scherule_output:9_f4_transport_spmt_model_Custom_CNN_forimage_v2_checkpoint/2022-02-27 19:51:12.694159/result/label.csv'
 os.makedirs(save_dir, exist_ok=True)
 save_dir = os.path.join(save_dir, vehicle_name)
 os.makedirs(save_dir, exist_ok=True)
 
 if test_model_list:
-    test_load_cnn_models(model_list)
+    test_load_cnn_models(model_list, input_shape=input_shape)
 
 for model_name in model_list:
     timestamp = str(datetime.datetime.now()).replace(' ', '_').replace(':', '-').replace('.', '-')
