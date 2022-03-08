@@ -1,10 +1,12 @@
 from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler, ReduceLROnPlateau, CSVLogger
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.metrics import Precision, Recall, AUC, TruePositives, TrueNegatives, FalsePositives, FalseNegatives
+from tensorflow.keras.models import load_model
 import numpy as np
 import os
 import csv
 import datetime
+import time
 from cnn_utils import lr_schedule, DataGenerator
 from model import select_cnn_model, test_load_cnn_models
 
@@ -25,7 +27,7 @@ vehicle_name = 'Sherule'
 save_dir = 'cnn_result_model'
 # Training parameters
 batch_size = 8
-epochs = 50
+epochs = 100
 test_model_list = False
 train_label = 'automatic_labelling_result/Scherule_output:9_f4_transport_spmt_model_Custom_CNN_forimage_v2_checkpoint/2022-02-27 19:51:12.694159/result/label.csv'
 test_label = 'data/test/testlabels/Scherule_testlabels.txt'
@@ -50,6 +52,7 @@ with open (test_label, 'r') as f:
 if test_model_list:
     test_load_cnn_models(model_list)
 
+result_summary=[]
 for model_name in model_list:
     csv_file_path = os.path.join(save_dir, f'{model_name}.csv')
     result_h5_filepath = os.path.join(save_dir, f'{model_name}.h5')
@@ -61,7 +64,7 @@ for model_name in model_list:
 
     # Prepare callbacks for model saving and for learning rate adjustment.
     checkpoint = ModelCheckpoint(filepath=result_h5_filepath,
-                                 monitor='val_accuracy',
+                                 monitor='val_loss',
                                  verbose=1,
                                  save_best_only=True)
 
@@ -88,10 +91,22 @@ for model_name in model_list:
                   callbacks=callbacks)
 
         # Test trained model.
-        scores = model.evaluate(testGen, verbose=1)
-        print('Test loss:', scores[0])
-        print('Test accuracy:', scores[1])
+        best_model = load_model(result_h5_filepath)
+        loss, accuracy, precision, recall, auc = best_model.evaluate(testGen, verbose=1)
+        result_summary.append({
+            'model': model_name,
+            'loss': loss,
+            'accuracy': accuracy, 
+            'precision': precision,
+            'recall': recall,
+            'auc': auc
+        })
+        with open(os.path.join(save_dir, 'test_summary.csv'), 'w') as result_file:
+            dict_writer = csv.DictWriter(result_file, result_summary[0].keys())
+            dict_writer.writeheader()
+            dict_writer.writerows(result_summary)
 
     except Exception as e:
+        print(e)
         print(f'{model_name} Fail to Train')
         pass
