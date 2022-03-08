@@ -27,13 +27,25 @@ save_dir = 'cnn_result_model'
 batch_size = 8
 epochs = 50
 test_model_list = False
-label_path = 'automatic_labelling_result/Scherule_output:9_f4_transport_spmt_model_Custom_CNN_forimage_v2_checkpoint/2022-02-27 19:51:12.694159/result/label.csv'
+train_label = 'automatic_labelling_result/Scherule_output:9_f4_transport_spmt_model_Custom_CNN_forimage_v2_checkpoint/2022-02-27 19:51:12.694159/result/label.csv'
+test_label = 'data/test/testlabels/Scherule_testlabels.txt'
 os.makedirs(save_dir, exist_ok=True)
 save_dir = os.path.join(save_dir, vehicle_name)
 os.makedirs(save_dir, exist_ok=True)
 timestamp = str(datetime.datetime.now())
 save_dir = os.path.join(save_dir, timestamp)
 os.makedirs(save_dir, exist_ok=True)
+
+with open(train_label, 'r') as f:
+    label_reader = csv.DictReader(f)
+    train_label_list = list(label_reader)
+
+test_label_list = []
+with open (test_label, 'r') as f:
+    for line in f.readlines():
+        image_path, _, _, gt = line.split()
+        test_label_list.append({'image_path': image_path, 'gt': gt})
+
 
 if test_model_list:
     test_load_cnn_models(model_list)
@@ -43,11 +55,9 @@ for model_name in model_list:
     result_h5_filepath = os.path.join(save_dir, f'{model_name}.h5')
     model, input_shape = select_cnn_model(model_name)
 
-    with open(label_path, 'r') as f:
-        label_reader = csv.DictReader(f)
-        label_list = list(label_reader)
-    trainGen = DataGenerator(label_list, batch_size, input_shape[:2])
-    testGen = DataGenerator(label_list, batch_size, input_shape[:2])
+
+    trainGen = DataGenerator(train_label_list, batch_size, input_shape[:2], label_key='gt')
+    testGen = DataGenerator(test_label_list, batch_size, input_shape[:2])
 
     # Prepare callbacks for model saving and for learning rate adjustment.
     checkpoint = ModelCheckpoint(filepath=result_h5_filepath,

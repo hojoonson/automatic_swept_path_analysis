@@ -8,11 +8,12 @@ class DataGenerator(Sequence):
     def __init__(self,
                  label_list: list,
                  batch_size: int,
-                 image_size: tuple) -> None:
+                 image_size: tuple,
+                 label_key: str='gt') -> None:
         self.label_list = label_list
         self.batch_size = batch_size
         self.image_size = image_size
-
+        self.label_key = label_key
     def on_epoch_end(self):
         random.shuffle(self.label_list)
 
@@ -25,7 +26,7 @@ class DataGenerator(Sequence):
         Xs, Ys = [], []
         for i in range(len(image_batch)):
             X = cv2.resize(cv2.imread(image_batch[i]['image_path']), self.image_size)
-            Y = 1 if image_batch[i]['gt'] == '1' else 0
+            Y = 1 if image_batch[i][self.label_key] == '1' else 0
             Xs.append(X)
             Ys.append(Y)
 
