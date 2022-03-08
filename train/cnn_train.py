@@ -32,14 +32,16 @@ label_path = 'automatic_labelling_result/Scherule_output:9_f4_transport_spmt_mod
 os.makedirs(save_dir, exist_ok=True)
 save_dir = os.path.join(save_dir, vehicle_name)
 os.makedirs(save_dir, exist_ok=True)
+timestamp = str(datetime.datetime.now())
+saved_dir = os.path.join(save_dir, timestamp)
+os.makedirs(save_dir, exist_ok=True)
 
 if test_model_list:
     test_load_cnn_models(model_list, input_shape=input_shape)
 
 for model_name in model_list:
-    timestamp = str(datetime.datetime.now()).replace(' ', '_').replace(':', '-').replace('.', '-')
-    csv_file_path = os.path.join(save_dir, f'{model_name}_{timestamp}.csv')
-    result_h5_filepath = os.path.join(save_dir, f'{model_name}_{timestamp}.h5')
+    csv_file_path = os.path.join(save_dir, f'{model_name}.csv')
+    result_h5_filepath = os.path.join(save_dir, f'{model_name}.h5')
 
     with open(label_path, 'r') as f:
         label_reader = csv.DictReader(f)
