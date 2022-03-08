@@ -2,6 +2,7 @@ import tensorflow as tf
 import tensorflow.keras.applications as keras_apps
 from tensorflow.keras import layers, Input, Model
 
+
 class MLPv1:
     def __init__(self, X: tf.compat.v1.placeholder, num_classes: int, frame_size: None, learning_rate=0.001) -> None:
         state_length = X.get_shape().as_list()[1]
@@ -85,7 +86,7 @@ class Custom_CNN_forimage_v2:
             learning_rate=self.learning_rate).minimize(self.loss)
 
 
-def select_cnn_model(model_name, weights=None, input_shape=(600, 600, 3), classes=2, classifier_activation='softmax'):
+def select_cnn_model(model_name, weights=None, input_shape=(600, 600, 3), classes=1, classifier_activation='softmax'):
     args = {
         'weights': weights,
         'input_shape': input_shape,

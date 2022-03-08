@@ -2,6 +2,8 @@ from tensorflow.keras.utils import Sequence
 import numpy as np
 import cv2
 import math
+
+
 class DataGenerator(Sequence):
     def __init__(self,
                  label_list: list,
@@ -16,11 +18,11 @@ class DataGenerator(Sequence):
 
     def __getitem__(self, index):
         image_batch = self.label_list[index * self.batch_size:(index + 1) * self.batch_size]
-        
+
         Xs, Ys = [], []
         for i in range(len(image_batch)):
             X = cv2.resize(cv2.imread(image_batch[i]['image_path']), self.image_size)
-            Y = [1,0] if image_batch[i]['gt'] == '1' else [0,1]
+            Y = 1 if image_batch[i]['gt'] == '1' else 0
             Xs.append(X)
             Ys.append(Y)
 
@@ -28,6 +30,7 @@ class DataGenerator(Sequence):
         Ys = np.array(Ys)
 
         return Xs, Ys
+
 
 def lr_schedule(epoch):
     lr = 1e-3*0.5
