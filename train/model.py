@@ -86,7 +86,7 @@ class Custom_CNN_forimage_v2:
             learning_rate=self.learning_rate).minimize(self.loss)
 
 
-def select_cnn_model(model_name, weights='imagenet', input_shape=(600, 600, 3), classifier_activation='softmax'):
+def select_cnn_model(model_name, weights='imagenet', classes=1, input_shape=(600, 600, 3), classifier_activation='softmax'):
     args = {
         'weights': weights,
         'input_shape': input_shape,
@@ -156,7 +156,11 @@ def select_cnn_model(model_name, weights='imagenet', input_shape=(600, 600, 3), 
     x = layers.Dense(256, activation='relu')(x)
     x = layers.Dense(64, activation='relu')(x)
     x = layers.Dense(16, activation='relu')(x)
-    outputs = layers.Dense(1, activation='sigmoid')(x)
+    if classes == 1:
+        activation = 'sigmoid'
+    else:
+        activation = 'softmax'
+    outputs = layers.Dense(classes, activation=activation)(x)
     output_model = Model(inputs, outputs)
     return output_model
 
