@@ -86,67 +86,94 @@ class Custom_CNN_forimage_v2:
             learning_rate=self.learning_rate).minimize(self.loss)
 
 
-def select_cnn_model(model_name, weights='imagenet', classes=1, input_shape=(600, 600, 3), classifier_activation='softmax'):
+def select_cnn_model(model_name, weights='imagenet', classes=1, classifier_activation='softmax'):
     args = {
         'weights': weights,
-        'input_shape': input_shape,
         'include_top': True
     }
     if model_name == 'VGG16':
-        model = keras_apps.vgg16.VGG16(**args, classifier_activation=classifier_activation)
+        input_shape = (224,224,3)
+        model = keras_apps.vgg16.VGG16(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'VGG19':
-        model = keras_apps.vgg19.VGG19(**args, classifier_activation=classifier_activation)
+        input_shape = (224,224,3)
+        model = keras_apps.vgg19.VGG19(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'MobileNet':
-        model = keras_apps.mobilenet.MobileNet(**args, classifier_activation=classifier_activation)
+        input_shape = (224,224,3)
+        model = keras_apps.mobilenet.MobileNet(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'MobileNetV2':
-        model = keras_apps.mobilenet_v2.MobileNetV2(**args, classifier_activation=classifier_activation)
+        input_shape = (224,224,3)
+        model = keras_apps.mobilenet_v2.MobileNetV2(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'MobileNetV3Large':
-        model = keras_apps.MobileNetV3Large(**args, classifier_activation=classifier_activation)
+        input_shape = (224,224,3)
+        model = keras_apps.MobileNetV3Large(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'MobileNetV3Small':
-        model = keras_apps.MobileNetV3Small(**args, classifier_activation=classifier_activation)
+        input_shape = (224,224,3)
+        model = keras_apps.MobileNetV3Small(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'DenseNet121':
-        model = keras_apps.densenet.DenseNet121(**args)
+        input_shape = (224,224,3)
+        model = keras_apps.densenet.DenseNet121(**args, input_shape=input_shape)
     if model_name == 'DenseNet169':
-        model = keras_apps.densenet.DenseNet169(**args)
+        input_shape = (224,224,3)
+        model = keras_apps.densenet.DenseNet169(**args, input_shape=input_shape)
     if model_name == 'DenseNet201':
-        model = keras_apps.densenet.DenseNet201(**args)
+        input_shape = (224,224,3)
+        model = keras_apps.densenet.DenseNet201(**args, input_shape=input_shape)
     if model_name == 'ResNet50':
-        model = keras_apps.resnet50.ResNet50(**args, classifier_activation=classifier_activation)
+        input_shape = (224,224,3)
+        model = keras_apps.resnet50.ResNet50(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'ResNet101':
-        model = keras_apps.resnet.ResNet101(**args, classifier_activation=classifier_activation)
+        input_shape = (224,224,3)
+        model = keras_apps.resnet.ResNet101(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'ResNet152':
-        model = keras_apps.resnet.ResNet152(**args, classifier_activation=classifier_activation)
+        input_shape = (224,224,3)
+        model = keras_apps.resnet.ResNet152(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'ResNet50V2':
-        model = keras_apps.resnet_v2.ResNet50V2(**args, classifier_activation=classifier_activation)
+        input_shape = (224,224,3)
+        model = keras_apps.resnet_v2.ResNet50V2(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'ResNet101V2':
-        model = keras_apps.resnet_v2.ResNet101V2(**args, classifier_activation=classifier_activation)
+        input_shape = (224,224,3)
+        model = keras_apps.resnet_v2.ResNet101V2(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'ResNet152V2':
-        model = keras_apps.resnet_v2.ResNet152V2(**args, classifier_activation=classifier_activation)
+        input_shape = (224,224,3)
+        model = keras_apps.resnet_v2.ResNet152V2(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'InceptionV3':
-        model = keras_apps.inception_v3.InceptionV3(**args, classifier_activation=classifier_activation)
+        input_shape = (299,299,3)
+        model = keras_apps.inception_v3.InceptionV3(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'InceptionResNetV2':
-        model = keras_apps.inception_resnet_v2.InceptionResNetV2(**args, classifier_activation=classifier_activation)
+        input_shape = (299,299,3)
+        model = keras_apps.inception_resnet_v2.InceptionResNetV2(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'EfficientNetB0':
-        model = keras_apps.efficientnet.EfficientNetB0(**args, classifier_activation=classifier_activation)
+        input_shape = (224,224,3)
+        model = keras_apps.efficientnet.EfficientNetB0(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'EfficientNetB1':
-        model = keras_apps.efficientnet.EfficientNetB1(**args, classifier_activation=classifier_activation)
+        input_shape = (240,240,3)
+        model = keras_apps.efficientnet.EfficientNetB1(**args, input_shape=input_shape, classifier_activation=classifier_activation)
     if model_name == 'EfficientNetB2':
+        input_shape = (260,260,3)
         model = keras_apps.efficientnet.EfficientNetB2(**args, classifier_activation=classifier_activation)
     if model_name == 'EfficientNetB3':
+        input_shape = (300,300,3)
         model = keras_apps.efficientnet.EfficientNetB3(**args, classifier_activation=classifier_activation)
     if model_name == 'EfficientNetB4':
+        input_shape = (380,380,3)
         model = keras_apps.efficientnet.EfficientNetB4(**args, classifier_activation=classifier_activation)
     if model_name == 'EfficientNetB5':
+        input_shape = (456,456,3)
         model = keras_apps.efficientnet.EfficientNetB5(**args, classifier_activation=classifier_activation)
     if model_name == 'EfficientNetB6':
+        input_shape = (528,528,3)
         model = keras_apps.efficientnet.EfficientNetB6(**args, classifier_activation=classifier_activation)
     if model_name == 'EfficientNetB7':
+        input_shape = (600,600,3)
         model = keras_apps.efficientnet.EfficientNetB7(**args, classifier_activation=classifier_activation)
     if model_name == 'Xception':
+        input_shape = (299,299,3)
         model = keras_apps.xception.Xception(**args, classifier_activation=classifier_activation)
     if model_name == 'NASNetLarge':
+        input_shape = (331,331,3)
         model = keras_apps.nasnet.NASNetLarge(**args)
     if model_name == 'NASNetMobile':
+        input_shape = (224,224,3)
         model = keras_apps.nasnet.NASNetMobile(**args)
 
     # use imagenet backbone and add custom fully connected layer
@@ -162,11 +189,11 @@ def select_cnn_model(model_name, weights='imagenet', classes=1, input_shape=(600
         activation = 'softmax'
     outputs = layers.Dense(classes, activation=activation)(x)
     output_model = Model(inputs, outputs)
-    return output_model
+    return output_model, input_shape
 
 
-def test_load_cnn_models(model_list, input_shape=(600, 600, 3)):
+def test_load_cnn_models(model_list):
     for model_name in model_list:
         print(model_name)
-        model = select_cnn_model(model_name, input_shape=input_shape)
+        model, _ = select_cnn_model(model_name)
         print(model.summary())

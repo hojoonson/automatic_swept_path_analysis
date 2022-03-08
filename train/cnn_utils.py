@@ -2,7 +2,7 @@ from tensorflow.keras.utils import Sequence
 import numpy as np
 import cv2
 import math
-
+import random
 
 class DataGenerator(Sequence):
     def __init__(self,
@@ -12,6 +12,9 @@ class DataGenerator(Sequence):
         self.label_list = label_list
         self.batch_size = batch_size
         self.image_size = image_size
+
+    def on_epoch_end(self):
+        random.shuffle(self.label_list)
 
     def __len__(self):
         return math.ceil(len(self.label_list) / self.batch_size)

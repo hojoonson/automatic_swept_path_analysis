@@ -10,7 +10,7 @@ from model import select_cnn_model, test_load_cnn_models
 
 model_list = [
     'VGG16',
-    # 'VGG19',  # too large memory
+    'VGG19',  # too large memory
     'MobileNet', 'MobileNetV2', 'MobileNetV3Large', 'MobileNetV3Small',
     'DenseNet121', 'DenseNet169', 'DenseNet201',
     'ResNet50', 'ResNet101', 'ResNet152',
@@ -24,24 +24,24 @@ model_list = [
 vehicle_name = 'Sherule'
 save_dir = 'cnn_result_model'
 # Training parameters
-batch_size = 1
+batch_size = 8
 epochs = 50
-input_shape = (224, 224, 3)
-test_model_list = True
+test_model_list = False
 label_path = 'automatic_labelling_result/Scherule_output:9_f4_transport_spmt_model_Custom_CNN_forimage_v2_checkpoint/2022-02-27 19:51:12.694159/result/label.csv'
 os.makedirs(save_dir, exist_ok=True)
 save_dir = os.path.join(save_dir, vehicle_name)
 os.makedirs(save_dir, exist_ok=True)
 timestamp = str(datetime.datetime.now())
-saved_dir = os.path.join(save_dir, timestamp)
+save_dir = os.path.join(save_dir, timestamp)
 os.makedirs(save_dir, exist_ok=True)
 
 if test_model_list:
-    test_load_cnn_models(model_list, input_shape=input_shape)
+    test_load_cnn_models(model_list)
 
 for model_name in model_list:
     csv_file_path = os.path.join(save_dir, f'{model_name}.csv')
     result_h5_filepath = os.path.join(save_dir, f'{model_name}.h5')
+    model, input_shape = select_cnn_model(model_name)
 
     with open(label_path, 'r') as f:
         label_reader = csv.DictReader(f)
@@ -63,7 +63,6 @@ for model_name in model_list:
                                    min_lr=0.5e-6)
     csv_logger = CSVLogger(csv_file_path, separator=',', append=False)
     callbacks = [checkpoint, lr_reducer, lr_scheduler, csv_logger]
-    model = select_cnn_model(model_name, input_shape=input_shape)
 
     try:
         print(f'{model_name} Train Start')
