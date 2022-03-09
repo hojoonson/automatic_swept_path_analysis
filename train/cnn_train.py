@@ -23,14 +23,19 @@ model_list = [
     'Xception', 'NASNetLarge', 'NASNetMobile'
 ]
 
-vehicle_name = 'Sherule'
+vehicle_name = 'Scherule'
 save_dir = 'cnn_result_model'
 # Training parameters
 batch_size = 8
 epochs = 100
 test_model_list = False
+
 train_label = 'automatic_labelling_result/Scherule_output:9_f4_transport_spmt_model_Custom_CNN_forimage_v2_checkpoint/2022-02-27 19:51:12.694159/result/label.csv'
+# train_label = 'automatic_labelling_result/Kamag_output:9_f4_transport_spmt_model_Custom_CNN_forimage_v2_checkpoint/2022-02-28 20:46:13.313695/result/label.csv'
+train_label_key = 'label'
+
 test_label = 'data/test/testlabels/Scherule_testlabels.txt'
+# test_label = 'data/test/testlabels/Kamag_testlabels.txt'
 os.makedirs(save_dir, exist_ok=True)
 save_dir = os.path.join(save_dir, vehicle_name)
 os.makedirs(save_dir, exist_ok=True)
@@ -59,7 +64,7 @@ for model_name in model_list:
     model, input_shape = select_cnn_model(model_name)
 
 
-    trainGen = DataGenerator(train_label_list, batch_size, input_shape[:2], label_key='gt')
+    trainGen = DataGenerator(train_label_list, batch_size, input_shape[:2], label_key=train_label_key)
     testGen = DataGenerator(test_label_list, batch_size, input_shape[:2])
 
     # Prepare callbacks for model saving and for learning rate adjustment.
@@ -101,7 +106,7 @@ for model_name in model_list:
             'recall': recall,
             'auc': auc
         })
-        with open(os.path.join(save_dir, 'test_summary.csv'), 'w') as result_file:
+        with open(os.path.join(save_dir, f'{vehicle_name}-{train_label_key}_summary.csv'), 'w') as result_file:
             dict_writer = csv.DictWriter(result_file, result_summary[0].keys())
             dict_writer.writeheader()
             dict_writer.writerows(result_summary)
