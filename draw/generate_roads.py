@@ -7,7 +7,7 @@ white = (255,255,255)
 black = (0,0,0)
 angle_list = [math.pi * i / 12 for i in range(2, 11)] # 0 < angle < pi
 thickness_list = [30, 40]
-length_list = [100, 200]
+length_list = [50, 100]
 
 def check_contours(image):
     imgray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -58,21 +58,21 @@ def FindEndPoint(start_point, direction_before, angle, length):
     end_point_list = [end_point1, end_point2]
     return end_point_list, direction_list
 
-def GenerateImage(type, angle_list = angle_list, thickness_list = thickness_list, length_list = length_list):
-    start_point = [300, 600]
-    end_point = [300, 300]
-    direction_before = [0, -1]
-    first_points = np.vstack([start_point, end_point])
-    for first_angle in angle_list:
-        if type == 1: # number of corner == 1
-            start_point = first_points[-1]
-            end_point_list, _ = FindEndPoint(start_point, direction_before, first_angle, length = 1000)
+def GenerateImage(corner_num, end_point_list = [[300, 300]], direction_before_list = [[0, -1]], index = 0, point_set_before = [300, 600], count = 0, angle_list = angle_list, thickness_list = thickness_list, length_list = length_list):
+    end_point = end_point_list[index]
+    direction_before = direction_before_list[index]
+    point_set = np.vstack([point_set_before, end_point])
+    start_point = point_set[-1]
+    count += 1
+    for angle in angle_list:
+        if corner_num == count:
+            end_point_list, _ = FindEndPoint(start_point, direction_before, angle, length = 1000)
             for i in range(2):
                 end_point = end_point_list[i]
-                points = np.vstack([first_points, end_point])
+                new_point_set = np.vstack([point_set, end_point])
                 for thickness in thickness_list:
                     image = np.zeros(shape = [600, 600, 3], dtype = 'uint8')
-                    cv2.polylines(img = image, pts = [points], isClosed = False, color = white, thickness = thickness)
+                    cv2.polylines(img = image, pts = [new_point_set], isClosed = False, color = white, thickness = thickness)
                     if check_contours(np.copy(image)) == True and check_edge(image) == True:
                         image = cv2.putText(image, "True", (10, 30), 0, 1, (255, 0, 0), 1, cv2.LINE_AA)
                     else:
@@ -80,56 +80,12 @@ def GenerateImage(type, angle_list = angle_list, thickness_list = thickness_list
                     cv2.imshow('result', image)
                     cv2.waitKey(0)
         else:
-            for first_length in length_list:
-                start_point = first_points[-1]
-                direction_before = [0, -1]
-                first_end_point_list, first_direction_list = FindEndPoint(start_point, direction_before, first_angle, first_length)
+            for length in length_list:
+                start_point = point_set[-1]
+                direction_before = direction_before_list[index]
+                end_point_list, direction_list = FindEndPoint(start_point, direction_before, angle, length)
                 for i in range(2):
-                    end_point = first_end_point_list[i]
-                    direction_before = first_direction_list[i]
-                    second_points = np.vstack([first_points, end_point])
-                    start_point = second_points[-1]
-                    for second_angle in angle_list:
-                        if type == 2: # number of corner == 2
-                            start_point = second_points[-1]
-                            direction_before = first_direction_list[i]
-                            end_point_list, _ = FindEndPoint(start_point, direction_before, second_angle, length = 1000)
-                            for j in range(2):
-                                end_point = end_point_list[j]
-                                points = np.vstack([second_points, end_point])
-                                for thickness in thickness_list:
-                                    image = np.zeros(shape = [600, 600, 3], dtype = 'uint8')
-                                    cv2.polylines(img = image, pts = [points], isClosed = False, color = white, thickness = thickness)
-                                    if check_contours(np.copy(image)) == True and check_edge(image) == True:
-                                        image = cv2.putText(image, "True", (10, 30), 0, 1, (255, 0, 0), 1, cv2.LINE_AA)
-                                    else:
-                                        image = cv2.putText(image, "False", (10, 30), 0, 1, (255, 0, 0), 1, cv2.LINE_AA)
-                                    cv2.imshow('result', image)
-                                    cv2.waitKey(0)
-                        else:
-                            for second_length in length_list:
-                                start_point = second_points[-1]
-                                direction_before = first_direction_list[i]
-                                second_end_point_list, second_direction_list = FindEndPoint(start_point, direction_before, second_angle, second_length)
-                                for j in range(2): # number of corner == 3
-                                    end_point = second_end_point_list[j]
-                                    direction_before = second_direction_list[j]
-                                    third_points = np.vstack([second_points, end_point])
-                                    start_point = third_points[-1]
-                                    for third_angle in angle_list:
-                                        end_point_list, _ = FindEndPoint(start_point, direction_before, third_angle, length = 1000)
-                                        for k in range(2):
-                                            end_point = end_point_list[k]
-                                            points = np.vstack([third_points, end_point])
-                                            for thickness in thickness_list:
-                                                image = np.zeros(shape = [600, 600, 3], dtype = 'uint8')
-                                                cv2.polylines(img = image, pts = [points], isClosed = False, color = white, thickness = thickness)
-                                                if check_contours(np.copy(image)) == True and check_edge(image) == True:
-                                                    image = cv2.putText(image, "True", (10, 30), 0, 1, (255, 0, 0), 1, cv2.LINE_AA)
-                                                else:
-                                                    image = cv2.putText(image, "False", (10, 30), 0, 1, (255, 0, 0), 1, cv2.LINE_AA)
-                                                cv2.imshow('result', image)
-                                                cv2.waitKey(0)
-GenerateImage(type = 2)
-# for i in range(1, 4):
-#     GenerateImage(type = i)
+                    GenerateImage(corner_num, end_point_list, direction_list, i, point_set, count)
+
+corner_num = 4
+GenerateImage(corner_num)
