@@ -21,9 +21,10 @@ class Game:
         label_path=os.path.join('sample_data','before_manual_labelling.txt')
         self.vehicle_name='Scherule'
         self.vehicle_type='spmt'
+        self.now_time=str(datetime.datetime.now()).replace(':', '-')
         save_path=os.path.join(os.path.dirname(label_path),'manual_labelling_result')
         os.makedirs(save_path, exist_ok=True)
-        self.save_path=os.path.join(save_path,f'{self.vehicle_name}_{self.vehicle_type}_label_{str(datetime.datetime.now())}.txt')
+        self.save_path=os.path.join(save_path,f'{self.vehicle_name}_{self.vehicle_type}_label_{self.now_time}.txt')
         path_list=[]
         with open(label_path,'r') as f:
             pathdata = f.readlines()
