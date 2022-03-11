@@ -26,7 +26,7 @@ cd train
 python automatic_labelling.py
 
 ## Manual
-### Q, E: rotaition(CCW, CW)
+### Q, E: rotation(CCW, CW)
 ### Arrows: move up, down, left, right
 ### T: True
 ### F: False
