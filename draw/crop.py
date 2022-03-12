@@ -9,7 +9,7 @@ black = (0,0,0)
 angle_list = [math.pi * i / 6 for i in range(1, 6)] # 0 < angle < pi
 thickness_list = [40]
 length_list = [200, 400]
-map_size = 600
+image_size = 1200
 
 def check_contours(image):
     imgray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -22,14 +22,15 @@ def check_contours(image):
 
 def check_edge(image):
     # append 4 serial edges
+    image_size = image.shape[0]
     edge = image[0,:,0]
-    edge = np.append(edge, image[:, map_size - 1, 0])
-    edge = np.append(edge, image[map_size - 1, :, 0][::-1])
+    edge = np.append(edge, image[:, image_size - 1, 0])
+    edge = np.append(edge, image[image_size - 1, :, 0][::-1])
     edge = np.append(edge, image[:, 0, 0][::-1])
  
     count = 0
     change_point = []
-    for i in range(1, map_size * 4 - 1):
+    for i in range(1, image_size * 4 - 1):
         if edge[i - 1] == 0 and edge[i] == 255 and edge[i + 1] == 255:
             change_point.append(i)
             count += 1
@@ -54,7 +55,7 @@ def GetX(y, x1, y1, x2, y2):
 def CheckBoundaryIntersection(end_point):
     x2 = round(end_point[0], 5)
     y2 = round(end_point[1], 5)
-    if x2 > 0 and x2 < map_size and y2 > 0 and y2 < map_size:
+    if x2 > 0 and x2 < image_size and y2 > 0 and y2 < image_size:
         return False
     else:
         return True
@@ -68,17 +69,17 @@ def FindIntersectionPoint(start_point, end_point):
         raise Exception("no intersection")
     else:
         point_x0 = GetY(0, x1, y1, x2, y2)
-        point_x600 = GetY(map_size, x1, y1, x2, y2)
+        point_x600 = GetY(image_size, x1, y1, x2, y2)
         point_y0 = GetX(0, x1, y1, x2, y2)
-        point_y600 = GetX(map_size, x1, y1, x2, y2)
-        if (point_x0 >= 0 and point_x0 <= map_size and x2 <= 0) and ((y1 <= point_x0 and point_x0 <= y2) or (y2 <= point_x0 and point_x0 <= y1)): # intersect with x = 0
+        point_y600 = GetX(image_size, x1, y1, x2, y2)
+        if (point_x0 >= 0 and point_x0 <= image_size and x2 <= 0) and ((y1 <= point_x0 and point_x0 <= y2) or (y2 <= point_x0 and point_x0 <= y1)): # intersect with x = 0
             return [0, point_x0]
-        elif (point_x600 >= 0 and point_x600 <= map_size and x2 >= map_size) and ((y1 <= point_x600 and point_x600 <= y2) or (y2 <= point_x600 and point_x600 <= y1)): # intersect with x = 600
-            return [map_size, point_x600]
-        elif (point_y0 >= 0 and point_y0 <= map_size and y2 <= 0) and ((x1 <= point_y0 and point_y0 <= x2) or (x2 <= point_y0 and point_y0 <= x1)): # intersect with y = 0
+        elif (point_x600 >= 0 and point_x600 <= image_size and x2 >= image_size) and ((y1 <= point_x600 and point_x600 <= y2) or (y2 <= point_x600 and point_x600 <= y1)): # intersect with x = 600
+            return [image_size, point_x600]
+        elif (point_y0 >= 0 and point_y0 <= image_size and y2 <= 0) and ((x1 <= point_y0 and point_y0 <= x2) or (x2 <= point_y0 and point_y0 <= x1)): # intersect with y = 0
             return [point_y0, 0]
-        elif (point_y600 >= 0 and point_y600 <= map_size and y2 >= map_size) and ((x1 <= point_y600 and point_y600 <= x2) or (x2 <= point_y600 and point_y600 <= x1)): # intersect with y = 600
-            return [point_y600, map_size]
+        elif (point_y600 >= 0 and point_y600 <= image_size and y2 >= image_size) and ((x1 <= point_y600 and point_y600 <= x2) or (x2 <= point_y600 and point_y600 <= x1)): # intersect with y = 600
+            return [point_y600, image_size]
         else:
             raise Exception("error")
 
@@ -106,6 +107,27 @@ def FindEndPoint(start_point, direction_before, angle, length):
         end_point2 = FindIntersectionPoint(start_point, end_point2)
     end_point_list = [end_point1, end_point2]
     return end_point_list, direction_list
+
+def CropImage(image, pts):
+    line_num = pts.shape[0] - 1
+    x = 0
+    y = 0
+    for i in range(1, line_num):
+        x += pts[i, 0] + pts[i + 1, 0]
+        y += pts[i, 1] + pts[i + 1, 1]
+    x /= (line_num - 1) * 2
+    y /= (line_num - 1) * 2
+    x = int(round(x))
+    y = int(round(y))
+    if x > 900:
+        x = 900
+    elif x < 300:
+        x = 300
+    if y > 900:
+        y = 900
+    elif y < 300:
+        y = 300
+    return image[y - 300 : y + 300, x - 300 : x + 300, :], [x, y]
 
 def DrawStraightRoad(image, pts, thickness):
     cv2.polylines(img = image, pts = [pts], isClosed = False, color = white, thickness = thickness)
@@ -139,7 +161,6 @@ def DrawCurvedRoad(image, pts, thickness):
             point_set = np.round(point_set)
             point_set = point_set.astype(np.int32)
             cv2.polylines(img = image, pts = [point_set], isClosed = False, color = white, thickness = thickness)
-
     if check_contours(np.copy(image)) == True and check_edge(image) == True:
         image = cv2.putText(image, "True", (10, 30), 0, 1, (255, 0, 0), 1, cv2.LINE_AA)
     else:
@@ -149,7 +170,7 @@ def DrawCurvedRoad(image, pts, thickness):
         point = point.astype(np.int32)
         cv2.line(image, point, point, color = (0, 0, 255), thickness = 10)
 
-def GenerateImage(corner_num, end_point_list = [[map_size / 2, map_size / 2]], direction_before_list = [[0, -1]], index = 0, point_set_before = [map_size / 2, map_size], count = 0, angle_list = angle_list, thickness_list = thickness_list, length_list = length_list):
+def GenerateImage(corner_num, end_point_list = [[image_size / 2, image_size / 2]], direction_before_list = [[0, -1]], index = 0, point_set_before = [image_size / 2, image_size], count = 0, angle_list = angle_list, thickness_list = thickness_list, length_list = length_list):
     end_point = end_point_list[index]
     direction_before = direction_before_list[index]
     point_set = np.vstack([point_set_before, end_point])
@@ -158,14 +179,17 @@ def GenerateImage(corner_num, end_point_list = [[map_size / 2, map_size / 2]], d
         count += 1
         for angle in angle_list:
             if corner_num == count:
-                end_point_list, _ = FindEndPoint(start_point, direction_before, angle, length = map_size * 2)
+                end_point_list, _ = FindEndPoint(start_point, direction_before, angle, length = image_size * 2)
                 for i in range(2):
                     end_point = end_point_list[i]
                     new_point_set = np.vstack([point_set, end_point])
                     for thickness in thickness_list:
-                        image = np.zeros(shape = [map_size, map_size, 3], dtype = 'uint8')
+                        image = np.zeros(shape = [image_size, image_size, 3], dtype = 'uint8')
                         # DrawStraightRoad(image, new_point_set, thickness)
                         DrawCurvedRoad(image, new_point_set, thickness)
+                        cropped_image, center_point = CropImage(image, new_point_set)
+                        cv2.imshow('crop', cropped_image)
+                        cv2.line(image, center_point, center_point, color = (255, 0, 0), thickness = 20)
                         cv2.imshow('result', image)
                         cv2.waitKey(0)
             else:
@@ -177,12 +201,15 @@ def GenerateImage(corner_num, end_point_list = [[map_size / 2, map_size / 2]], d
                         GenerateImage(corner_num, end_point_list, direction_list, i, point_set, count)
     else:
         for thickness in thickness_list:
-            image = np.zeros(shape = [map_size, map_size, 3], dtype = 'uint8')
+            image = np.zeros(shape = [image_size, image_size, 3], dtype = 'uint8')
             DrawCurvedRoad(image, point_set, thickness)
             # DrawStraightRoad(image, point_set, thickness)
+            cropped_image, center_point = CropImage(image, point_set)
+            cv2.imshow('crop', cropped_image)
             cv2.line(image, [1100, 1100], [1100, 1100], color = (0, 255, 0), thickness = 20)
+            cv2.line(image, center_point, center_point, color = (255, 0, 0), thickness = 20)
             cv2.imshow('result', image)
             cv2.waitKey(0)
 
-corner_num = 3
+corner_num = 4
 GenerateImage(corner_num)
