@@ -3,6 +3,8 @@ import numpy as np
 import random
 import math
 from Bezier import Bezier
+import json
+import os
 
 white = (255,255,255)
 black = (0,0,0)
@@ -10,9 +12,19 @@ angle_list = [math.pi * i / 6 for i in range(1, 6)] # 0 < angle < pi
 thickness_list = [40]
 length_list = [200, 400]
 map_size = 600
+parameter = {}
+parameter['corner_points'] = []
+parameter['curve_line_points'] = []
+parameter['thickness'] = []
+save_directory = './draw/picture_parameter'
+save_name = 'parameter'
 
-def check_contours(image):
-    imgray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+def check_contours(pts):
+    test_image = np.zeros(shape = [map_size, map_size, 3], dtype = 'uint8')
+    pts = np.round(pts)
+    pts = pts.astype(np.int32)
+    cv2.polylines(img = test_image, pts = [pts], isClosed = False, color = white, thickness = 1)
+    imgray = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
     contours, _ = cv2.findContours(imgray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     # num of contours must be 1
     if len(contours) == 1:
@@ -109,7 +121,7 @@ def FindEndPoint(start_point, direction_before, angle, length):
 
 def DrawStraightRoad(image, pts, thickness):
     cv2.polylines(img = image, pts = [pts], isClosed = False, color = white, thickness = thickness)
-    if check_contours(np.copy(image)) == True and check_edge(image) == True:
+    if check_contours(pts) == True and check_edge(image) == True:
         image = cv2.putText(image, "True", (10, 30), 0, 1, (255, 0, 0), 1, cv2.LINE_AA)
     else:
         image = cv2.putText(image, "False", (10, 30), 0, 1, (255, 0, 0), 1, cv2.LINE_AA)
@@ -140,7 +152,12 @@ def DrawCurvedRoad(image, pts, thickness):
             point_set = point_set.astype(np.int32)
             cv2.polylines(img = image, pts = [point_set], isClosed = False, color = white, thickness = thickness)
 
-    if check_contours(np.copy(image)) == True and check_edge(image) == True:
+    if check_contours(pts) == True and check_edge(image) == True:
+        temp_pts = np.round(pts)
+        temp_pts = temp_pts.astype(np.int32)
+        parameter['corner_points'].append(temp_pts.tolist())
+        parameter['curve_line_points'].append(point_set.tolist())
+        parameter['thickness'].append(thickness)
         image = cv2.putText(image, "True", (10, 30), 0, 1, (255, 0, 0), 1, cv2.LINE_AA)
     else:
         image = cv2.putText(image, "False", (10, 30), 0, 1, (255, 0, 0), 1, cv2.LINE_AA)
@@ -184,5 +201,17 @@ def GenerateImage(corner_num, end_point_list = [[map_size / 2, map_size / 2]], d
             cv2.imshow('result', image)
             cv2.waitKey(0)
 
-corner_num = 3
+corner_num = 1
 GenerateImage(corner_num)
+
+if os.path.exists(save_directory) == False:
+    os.makedirs(save_directory)
+
+count = 0
+save_path = os.path.join(save_directory, save_name + '_{}.json'.format(count))
+while os.path.exists(save_path) == True:
+    count += 1
+    save_path = os.path.join(save_directory, save_name + '_{}.json'.format(count))
+
+with open(save_path, 'w') as f:
+    json.dump(parameter, f)

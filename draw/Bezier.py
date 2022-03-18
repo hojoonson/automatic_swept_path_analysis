@@ -93,33 +93,3 @@ class Bezier():
         curve = np.delete(curve, 0, 0)
         #print("curve final            \n", curve, "\n--- --- --- --- --- --- ")
         return curve
-
-    def IntCurve(t_values, points):
-        """
-        Returns a point interpolated by the Bezier process
-        INPUTS:
-            t_values     list of floats/ints; a parameterisation.
-            points       list of numpy arrays; points.
-        OUTPUTS:
-            curve        list of numpy arrays; points.
-        """
-
-        if not hasattr(t_values, '__iter__'):
-            raise TypeError("`t_values` Must be an iterable of integers or floats, of length greater than 0 .")
-        if len(t_values) < 1:
-            raise TypeError("`t_values` Must be an iterable of integers or floats, of length greater than 0 .")
-        if not isinstance(t_values[0], (int, float)):
-            raise TypeError("`t_values` Must be an iterable of integers or floats, of length greater than 0 .")
-
-        curve = np.array([[0] * len(points[0])])
-        for t in t_values:
-            #print("curve                  \n", curve)
-            #print("Bezier.Point(t, points) \n", Bezier.Point(t, points))
-            x = int(round(Bezier.Point(t, points)[0], 0))
-            y = int(round(Bezier.Point(t, points)[1], 0))
-            curve = np.append(curve, [[x, y]], axis=0)
-
-            #print("curve after            \n", curve, "\n--- --- --- --- --- --- ")
-        curve = np.delete(curve, 0, 0)
-        #print("curve final            \n", curve, "\n--- --- --- --- --- --- ")
-        return curve
