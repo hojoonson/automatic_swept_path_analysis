@@ -284,10 +284,21 @@ class Vehicle:
                 self.carwidth = 2.430*self.scale*4
                 self.carlength = 7.330*self.scale*2
             elif vehicle_name == 'Kamag':
-                self.scale = 9.4
+                self.scale = 9.4 
                 self.carwidth = 2.430*self.scale*3
                 self.carlength = 7.000*self.scale*3
-
+            elif vehicle_name == 'Type_1':
+                self.carwidth = 90
+                self.carlength = 160
+            elif vehicle_name == 'Type_2':
+                self.carwidth = 90
+                self.carlength = 180
+            elif vehicle_name == 'Type_3':
+                self.carwidth = 100
+                self.carlength = 160
+            elif vehicle_name == 'Type_4':
+                self.carwidth = 100
+                self.carlength = 180
         self.car_velocity = -50
         self.vehicle = vehicle_type
         self.position = Vector2(x, y)
