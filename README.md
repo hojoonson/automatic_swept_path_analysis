@@ -30,11 +30,17 @@ python automatic_labelling.py
 
 ### 2. Manual
 
-```
-Q, E: Rotation(CCW, CW)
-Arrows: Move up, down, left, right
-T: Save as True
-F: Save as False
-```
+<strong>Q, W</strong>: Rotation(CCW, CW)
+
+<strong>Arrows</strong>: Move up, down, left, right
+
+<strong>T</strong>: Save as True
+
+<strong>F</strong>: Save as False
+
+<strong>R</strong>: Retry
+
+<strong>C</strong>: Capture Current Pygame Image
+
 
 ### Caution: Don't press the down arrow first
