@@ -18,3 +18,17 @@ docker_run.sh
 cd train
 python automatic_labelling.py
 ```
+
+### 4. Start Manual Labelling
+
+'''
+cd train
+python automatic_labelling.py
+
+## Manual
+### Q, E: rotation(CCW, CW)
+### Arrows: move up, down, left, right
+### T: True
+### F: False
+### Caution: Don't press the down arrow first
+'''
