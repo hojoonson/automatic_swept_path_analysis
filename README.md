@@ -19,16 +19,31 @@ cd train
 python automatic_labelling.py
 ```
 
+# How to generate roads
+
+### 1. Create json file that contains road shape parameters.
+
+```
+python draw/generate_roads_v2.py
+```
+
+### 2. Load roads from json file.
+```
+cd train
+python load_roads.py
+```
+
+
 # How to use Manual Labelling
 
-### 1. Start Manual Labelling
+### 1. Execute python code.
 
 ```
 cd train
 python automatic_labelling.py
 ```
 
-### 2. Manual
+### 2. Key Funcions
 
 <strong>Q, W</strong>: Rotation(CCW, CW)
 
