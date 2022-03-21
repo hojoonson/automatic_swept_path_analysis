@@ -19,16 +19,22 @@ cd train
 python automatic_labelling.py
 ```
 
-### 4. Start Manual Labelling
+# How to use Manual Labelling
 
-'''
+### 1. Start Manual Labelling
+
+```
 cd train
 python automatic_labelling.py
+```
 
-## Manual
-### Q, E: rotation(CCW, CW)
-### Arrows: move up, down, left, right
-### T: True
-### F: False
+### 2. Manual
+
+```
+Q, E: Rotation(CCW, CW)
+Arrows: Move up, down, left, right
+T: Save as True
+F: Save as False
+```
+
 ### Caution: Don't press the down arrow first
-'''
