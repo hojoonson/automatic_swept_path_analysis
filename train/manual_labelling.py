@@ -18,8 +18,10 @@ logger = logging.getLogger()
 
 class Game:
     def __init__(self):
-        label_path=os.path.join('sample_data','before_manual_labelling.txt')
-        self.vehicle_name='Scherule'
+        # label_path=os.path.join('sample_data','before_manual_labelling.txt')
+        label_path = 'generation_result/2022-03-21_22:56:30.392145/label_before_manual_labelling.txt'
+        self.start_idx = 0
+        self.vehicle_name='Type_3'
         self.vehicle_type='spmt'
         self.now_time=str(datetime.datetime.now()).replace(':', '-')
         save_path=os.path.join(os.path.dirname(label_path),'manual_labelling_result')
@@ -76,7 +78,8 @@ class Game:
 
         truecount=0
         falsecount=0
-        for episode in range(self.max_episode_count):
+        episode = self.start_idx
+        while episode <= len(self.roadimage_path) - 1:
             if breakvalid==1:
                 pygame.quit()
                 break
@@ -143,7 +146,7 @@ class Game:
                     elif pressed[pygame.K_q]:
                         if vehicle.vehicle=='spmt':
                             action=10
-                    elif pressed[pygame.K_e]:
+                    elif pressed[pygame.K_w]:
                         if vehicle.vehicle=='spmt':
                             action=11
                     else :
@@ -171,7 +174,7 @@ class Game:
                     elif pressed[pygame.K_q]:
                         if vehicle.vehicle=='spmt':
                             action=12
-                    elif pressed[pygame.K_e]:
+                    elif pressed[pygame.K_w]:
                         if vehicle.vehicle=='spmt':
                             action=13
                     else:
@@ -187,7 +190,7 @@ class Game:
                     if vehicle.vehicle=='spmt':
                         if pressed[pygame.K_q]:
                             action=6
-                        elif pressed[pygame.K_e]:
+                        elif pressed[pygame.K_w]:
                             action=7
                         elif pressed[pygame.K_RIGHT]:
                             action=8
@@ -229,6 +232,20 @@ class Game:
                         falsecount+=1
                         time.sleep(0.2)
                         self.done=True
+
+                elif pressed[pygame.K_r] and presscount<=1000:
+                    if 0<presscount<=999:
+                        presscount+=1
+                        continue
+                    elif presscount==1000:
+                        presscount=0
+                        continue
+                    elif presscount==0:
+                        presscount+=1
+                        logger.info(f'{self.util.imagefile} Retry')
+                        time.sleep(0.2)
+                        break
+                        
                 vehicle.step(action)
                 nextvalid,rear_count=vehicle.update(dt,self.util.image,type=self.vehicle_type,rear_count=rear_count)
 
@@ -266,6 +283,10 @@ class Game:
                 global_step+=1
                 if self.done:
                     logger.info(f'True : {truecount} False : {falsecount}')
+            
+            if self.done:
+                episode +=1
+
 
 if __name__ == '__main__':
     game = Game()
