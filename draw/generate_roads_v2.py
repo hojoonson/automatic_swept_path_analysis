@@ -10,14 +10,14 @@ cnt = 0
 white = (255,255,255)
 black = (0,0,0)
 
-angle_num = 12
+angle_num = 9
 parameter = {
     'corner_points': [],
     'curve_line_points': [],
     'thickness': [],
-    'angle_list': [math.pi * i / angle_num for i in range(1, angle_num)], # 0 < angle < pi
-    'thickness_list': [120, 125, 130, 135, 140],
-    'length_list': [200, 300, 400],
+    'angle_list': [0.75 * math.pi * i / angle_num for i in range(1, angle_num)], # 0 < angle < 0.75 pi
+    'thickness_list': [120, 122, 124, 126, 128, 130],
+    'length_list': [150, 200, 250],
     'corner_num_list': [1, 2],
     'map_size': 600
     }
@@ -34,15 +34,22 @@ while os.path.exists(save_path) == True:
     save_path = os.path.join(save_directory, f'{save_name}_{count}.json')
 
 
-def check_contours(pts):
-    test_image = np.zeros(shape = [parameter['map_size'], parameter['map_size'], 3], dtype = 'uint8')
+def check_contours(pts, thickness):
+    thin_image = np.zeros(shape = [parameter['map_size'], parameter['map_size'], 3], dtype = 'uint8')
+    thick_image = np.zeros(shape = [parameter['map_size'], parameter['map_size'], 3], dtype = 'uint8')
     pts = np.round(pts)
     pts = pts.astype(np.int32)
-    cv2.polylines(img = test_image, pts = [pts], isClosed = False, color = white, thickness = 1)
-    imgray = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
-    contours, _ = cv2.findContours(imgray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+    cv2.polylines(img = thin_image, pts = [pts], isClosed = False, color = white, thickness = 5)
+    imgray = cv2.cvtColor(thin_image, cv2.COLOR_BGR2GRAY)
+    thin_contours, _ = cv2.findContours(imgray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+    cv2.polylines(img = thick_image, pts = [pts], isClosed = False, color = white, thickness = thickness)
+    imgray = cv2.cvtColor(thick_image, cv2.COLOR_BGR2GRAY)
+    thick_contours, _ = cv2.findContours(imgray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
     # num of contours must be 1
-    if len(contours) == 1:
+    if len(thin_contours) == 1 and len(thick_contours) == 1:
         return True
     else:
         return False
@@ -53,15 +60,33 @@ def check_edge(image):
     edge = np.append(edge, image[:, parameter['map_size'] - 1, 0])
     edge = np.append(edge, image[parameter['map_size'] - 1, :, 0][::-1])
     edge = np.append(edge, image[:, 0, 0][::-1])
- 
-    count = 0
-    change_point = []
-    for i in range(1, parameter['map_size'] * 4 - 1):
-        if edge[i - 1] == 0 and edge[i] == 255 and edge[i + 1] == 255:
-            change_point.append(i)
-            count += 1
+    
+    prev = edge[0]
+    # count the number of edge white cluster
+    cluster = 0
+    start_idx = 0
+    first_start_idx = 0
+    for idx, pt in enumerate(edge):
+        if pt != 0 and prev == 0:
+            start_idx = idx
+            if first_start_idx == 0:
+                first_start_idx = idx
+        if pt == 0 and prev !=0:
+            if idx - start_idx > 300 or idx - start_idx < 100:
+                return False
+            cluster+=1
+        prev = pt
 
-    if count == 2:
+    if edge[-1] != 0:
+        if edge[0] != 0:
+            idx = len(edge) - 1 + first_start_idx
+        else:
+            idx = len(edge) - 1
+        if idx - start_idx > 300 or idx - start_idx < 100:
+            return False
+
+    # num of cluster must be 2
+    if cluster == 2:
         return True
     else:
         return False
@@ -168,7 +193,7 @@ def DrawCurvedRoad(image, pts, thickness):
             point_set = point_set.astype(np.int32)
             cv2.polylines(img = image, pts = [point_set], isClosed = False, color = white, thickness = thickness)
 
-    if check_contours(pts) == True and check_edge(image) == True:
+    if check_contours(pts, thickness) == True and check_edge(image) == True:
         temp_pts = np.round(pts)
         temp_pts = temp_pts.astype(np.int32)
         parameter['corner_points'].append(temp_pts.tolist())
