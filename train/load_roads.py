@@ -19,9 +19,14 @@ def DrawRoadsUsingParameter(data):
     image = np.zeros(shape = [600, 600, 3], dtype = 'uint8')
     cv2.polylines(img = image, pts = [curve_line_points], isClosed = False, color = white, thickness = thickness)
     marked_image = np.copy(image)
+    cv2.polylines(img = marked_image, pts = [corner_points], isClosed = False, color = (0, 255, 0), thickness = 5)
+    for point in curve_line_points:
+        cv2.line(marked_image, point, point, color = (255, 0, 0), thickness = 10)
     for point in corner_points:
         cv2.line(marked_image, point, point, color = (0, 0, 255), thickness = 10)
-    return image, marked_image
+
+
+    return image, marked_image, thickness
 
 if __name__=='__main__':
     save_path = 'generation_result'
@@ -32,10 +37,10 @@ if __name__=='__main__':
         data = json.load(f)
     picture_num = len(data['corner_points'])
     for i in tqdm(range(picture_num)):
-        image, marked_image = DrawRoadsUsingParameter(data)
+        image, marked_image, thickness = DrawRoadsUsingParameter(data)
 
-        image_path = os.path.join(save_path, f'{str(i).zfill(4)}.png')
-        marked_image_path = os.path.join(save_path, f'marked_{str(i).zfill(4)}.png')
+        image_path = os.path.join(save_path, f'{str(i).zfill(4)}_{thickness}.png')
+        marked_image_path = os.path.join(save_path, f'marked_{str(i).zfill(4)}_{thickness}.png')
         label_path = os.path.join(save_path, 'label_before_manual_labelling.txt')
         
         cv2.imwrite(image_path, image)

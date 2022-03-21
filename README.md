@@ -33,6 +33,11 @@ cd train
 python load_roads.py
 ```
 
+You can load original image and marked image.
+
+<img src="./images/original.png" width=300 height=300></img>
+<img src="./images/marked.png" width=300 height=300></img>
+
 
 # How to use Manual Labelling
 
