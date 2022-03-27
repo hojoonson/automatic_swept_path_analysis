@@ -222,13 +222,13 @@ class utility():
     def check_collision(self, position, angle, carwidth, carlength):
         x1, x2, x3, x4, y1, y2, y3, y4 = self.find_carpoints(
             position, angle, carwidth, carlength)
-        cloneimage = deepcopy(self.image)
+        cloneimage = np.copy(self.image)
         # draw car rectangle
         cv2.line(cloneimage, (int(x1), int(y1)), (int(x2), int(y2)), (255, 255, 255))
         cv2.line(cloneimage, (int(x1), int(y1)), (int(x3), int(y3)), (255, 255, 255))
         cv2.line(cloneimage, (int(x4), int(y4)), (int(x2), int(y2)), (255, 255, 255))
         cv2.line(cloneimage, (int(x4), int(y4)), (int(x3), int(y3)), (255, 255, 255))
-        ii = deepcopy(self.image)
+        ii = np.copy(self.image)
         cv2.line(ii, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0))
         cv2.line(ii, (int(x1), int(y1)), (int(x3), int(y3)), (255, 0, 0))
         cv2.line(ii, (int(x4), int(y4)), (int(x2), int(y2)), (255, 0, 0))
