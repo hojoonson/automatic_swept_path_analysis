@@ -222,17 +222,30 @@ class utility():
     def check_collision(self, position, angle, carwidth, carlength):
         x1, x2, x3, x4, y1, y2, y3, y4 = self.find_carpoints(
             position, angle, carwidth, carlength)
-        cloneimage = deepcopy(self.image)
+        cloneimage = np.copy(self.image)
         # draw car rectangle
         cv2.line(cloneimage, (int(x1), int(y1)), (int(x2), int(y2)), (255, 255, 255))
         cv2.line(cloneimage, (int(x1), int(y1)), (int(x3), int(y3)), (255, 255, 255))
         cv2.line(cloneimage, (int(x4), int(y4)), (int(x2), int(y2)), (255, 255, 255))
         cv2.line(cloneimage, (int(x4), int(y4)), (int(x3), int(y3)), (255, 255, 255))
+        ii = np.copy(self.image)
+        cv2.line(ii, (int(x1), int(y1)), (int(x2), int(y2)), (255, 255, 0))
+        cv2.line(ii, (int(x1), int(y1)), (int(x3), int(y3)), (255, 255, 0))
+        cv2.line(ii, (int(x4), int(y4)), (int(x2), int(y2)), (255, 255, 0))
+        cv2.line(ii, (int(x4), int(y4)), (int(x3), int(y3)), (255, 255, 0))
         # check sameness
         if np.array_equal(self.image, cloneimage):
-            return False
+            is_collision = False
         else:
-            return True
+            img_diff = self.image - cloneimage
+            diff = list(zip(*np.where(img_diff[:,:,0]!=0)))
+            for point in diff:
+                y, x = point
+                cv2.line(ii, (x,y), (x,y), color = (0, 0, 255), thickness = 5)
+                print(self.image[y ,x], cloneimage[y, x])
+            is_collision = True
+        cv2.imshow('clone', ii)
+        return is_collision
 
     def find_carpoints(self, position, angle, carwidth, carlength):
         # convert to radian
