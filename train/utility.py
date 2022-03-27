@@ -312,6 +312,14 @@ class Vehicle:
             elif vehicle_name == 'Type_4':
                 self.carwidth = 100
                 self.carlength = 180
+            elif vehicle_name == 'Scherule_4axle':
+                scale = 30
+                self.carwidth = 2.430 * scale
+                self.carlength = 5.930 * scale
+            elif vehicle_name == 'Kamag_4axle':
+                scale = 30
+                self.carwidth = 2.430 * scale
+                self.carlength = 5.600 * scale
         self.car_velocity = -50
         self.vehicle = vehicle_type
         self.position = Vector2(x, y)
