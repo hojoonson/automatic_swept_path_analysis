@@ -242,7 +242,7 @@ class utility():
             for point in diff:
                 y, x = point
                 cv2.line(ii, (x,y), (x,y), color = (0, 0, 255), thickness = 5)
-                print(self.image[y ,x], cloneimage[y, x])
+                # print(self.image[y ,x], cloneimage[y, x])
             is_collision = True
         cv2.imshow('clone', ii)
         return is_collision

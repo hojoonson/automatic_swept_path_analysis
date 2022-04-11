@@ -9,7 +9,7 @@ http://web.stanford.edu/class/psych209/Readings/MnihEtAlHassibis15NatureControlD
 import numpy as np
 import tensorflow as tf
 
-from model import MLPv1, Custom_CNN_forimage_v1, Custom_CNN_forimage_v2
+from model import MLPv1, Custom_CNN_forimage_v1, Custom_CNN_forimage_v2, Custom_CNN_forimage_v3
 from utility import Vehicle
 
 class DeepQNetwork:
@@ -49,6 +49,7 @@ class DeepQNetwork:
                 'MLPv1': MLPv1,
                 'Custom_CNN_forimage_v1': Custom_CNN_forimage_v1,
                 'Custom_CNN_forimage_v2': Custom_CNN_forimage_v2,
+                'Custom_CNN_forimage_v3': Custom_CNN_forimage_v3,
             }
 
             model = models[model_name](self._X, self.output_size,
