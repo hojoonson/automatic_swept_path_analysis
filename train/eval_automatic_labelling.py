@@ -11,6 +11,7 @@ with open(label_path, 'r', newline='') as labelfile:
         elif element['label'] == '0' and element['gt'] == '1':
             fn +=1
         elif element['label'] == '1' and element['gt'] == '0':
+            print(element['image_path'])
             fp +=1
         elif element['label'] == '0' and element['gt'] == '0':
             tn +=1
@@ -22,4 +23,5 @@ with open(label_path, 'r', newline='') as labelfile:
     print(f'Accuracy : {accuracy}')
     print(f'Precision : {precision}')
     print(f'Recall : {recall}')
+
     print(f'F1 Score : {f1_score}')
