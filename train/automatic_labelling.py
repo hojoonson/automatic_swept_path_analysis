@@ -73,9 +73,9 @@ class Train:
 
 class Simulation:
     def __init__(self):
-        self.vehicle_name = 'v2'
+        self.vehicle_name = 'v1'
         self.vehicle_type='spmt'
-        label_path='./generation_result/total_test_data_0411/manual_labelling_result/v2_total.txt'
+        label_path='./generation_result/total_test_data_0411/manual_labelling_result/v1_total.txt'
         # label_path=os.path.join('data','train','trainlabels',f'{self.vehicle_name}_trainlabels.txt')
         path_list=[]
         with open(label_path,'r') as f:
@@ -285,7 +285,7 @@ class Simulation:
                     if (nextvalid!=1 and nextvalid!=0) or (step_count!=0 and step_count%1000==0):
                         if nextvalid==2:
                             self.roadimage_path[index]['label'] = '1'
-                            self.roadimage_path[index]['passccnt'] +=1
+                            self.roadimage_path[index]['passcnt'] +=1
                             self.roadimage_path[index]['correct'] = '1' == self.roadimage_path[index]['gt']
                         else:
                             self.roadimage_path[index]['retry'] += 1
