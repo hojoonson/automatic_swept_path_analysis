@@ -73,9 +73,9 @@ class Train:
 
 class Simulation:
     def __init__(self):
-        self.vehicle_name = 'Scherule'
+        self.vehicle_name = 'v2'
         self.vehicle_type='spmt'
-        label_path='./generation_result/2022-03-04_00:14:23.607420/manual_labelling_result/Scherule_spmt_label_2022-03-04 00:14:43.438936.txt'
+        label_path='./generation_result/total_test_data_0411/manual_labelling_result/v2_total.txt'
         # label_path=os.path.join('data','train','trainlabels',f'{self.vehicle_name}_trainlabels.txt')
         path_list=[]
         with open(label_path,'r') as f:
@@ -87,6 +87,7 @@ class Simulation:
                     'startx': float(splited[1]),
                     'starty': float(splited[2]),
                     'retry': 0,
+                    'passcnt':0,
                     'label': '0',
                     'gt': splited[3],
                     'correct': '0' == splited[3]
@@ -96,8 +97,8 @@ class Simulation:
         print(self.roadimage_path)
         self.util=utility()
         self.random_candidate=3
-        self.map_updatecount=1
-        self.multiple = 20
+        self.map_updatecount=2
+        self.multiple = 5
         self.util.imagefile=self.roadimage_path[0]['image_path']
         pygame.init()
         pygame.display.set_caption('Swept Path Analysis')
@@ -162,10 +163,11 @@ class Simulation:
             
             global_step = 1
             stack_list=[[pygame.transform.rotate(stack_image,vehicle.angle),vehicle.position,vehicle.angle]]
-            for episode in range(FLAGS.max_episode_count):
+            for episode in range(self.map_updatecount*len(self.roadimage_path)*self.multiple):
                 #set road image!
                 index = int(episode/self.map_updatecount)%len(self.roadimage_path)
-                if self.roadimage_path[index]['retry'] > self.map_updatecount * self.multiple:
+                if self.roadimage_path[index]['passcnt'] > self.map_updatecount or\
+                    self.roadimage_path[index]['retry'] > self.map_updatecount * self.multiple:
                     continue
                 self.util.imagefile=self.roadimage_path[index]['image_path']
                 self.startx=self.roadimage_path[index]['startx']
@@ -283,6 +285,7 @@ class Simulation:
                     if (nextvalid!=1 and nextvalid!=0) or (step_count!=0 and step_count%1000==0):
                         if nextvalid==2:
                             self.roadimage_path[index]['label'] = '1'
+                            self.roadimage_path[index]['passccnt'] +=1
                             self.roadimage_path[index]['correct'] = '1' == self.roadimage_path[index]['gt']
                         else:
                             self.roadimage_path[index]['retry'] += 1
