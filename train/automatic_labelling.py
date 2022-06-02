@@ -97,8 +97,8 @@ class Simulation:
         print(self.roadimage_path)
         self.util=utility()
         self.random_candidate=3
-        self.map_updatecount=2
-        self.multiple = 5
+        self.map_updatecount=3
+        self.multiple = 10
         self.util.imagefile=self.roadimage_path[0]['image_path']
         pygame.init()
         pygame.display.set_caption('Swept Path Analysis')
@@ -240,10 +240,10 @@ class Simulation:
                     if nextvalid==2:
                         if vehicle.velocity.y<=0:
                             logger.info('Finish the Analysis!!!')
-                            reward = max(4.0, reward + 4.0)
+                            reward = max(0.4, reward + 0.4)
                         else:
                             nextvalid = 0
-                            reward = min(-4.0, reward - 4.0)
+                            reward = min(-0.4, reward - 0.4)
                     if nextvalid==3:
                         logger.info('force quit to next episode')
 

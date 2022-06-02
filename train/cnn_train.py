@@ -23,19 +23,33 @@ model_list = [
     'Xception', 'NASNetLarge', 'NASNetMobile'
 ]
 
-vehicle_name = 'Scherule'
+vehicle_name = 'v2'
+with open(f'./data/cnn_data/{vehicle_name}/train.csv', 'r') as f:
+    label_reader = csv.DictReader(f)
+    train_images = list(label_reader)
+    train_images = [os.path.basename(x['image_path']) for x in train_images]
+with open(f'./data/cnn_data/{vehicle_name}/test.csv', 'r') as f:
+    label_reader = csv.DictReader(f)
+    test_images = list(label_reader)
+    test_images = [os.path.basename(x['image_path']) for x in test_images]
+
+for image in test_images:
+    assert image not in train_images
+
 save_dir = 'cnn_result_model'
 # Training parameters
 batch_size = 8
 epochs = 100
 test_model_list = False
 
-train_label = 'automatic_labelling_result/Scherule_output:9_f4_transport_spmt_model_Custom_CNN_forimage_v2_checkpoint/2022-02-27 19:51:12.694159/result/label.csv'
-# train_label = 'automatic_labelling_result/Kamag_output:9_f4_transport_spmt_model_Custom_CNN_forimage_v2_checkpoint/2022-02-28 20:46:13.313695/result/label.csv'
-train_label_key = 'label'
 
-test_label = 'data/test/testlabels/Scherule_testlabels.txt'
+# source_label = './automatic_labelling_result/v1_output:9_f4_transport_spmt_model_Custom_CNN_forimage_v2_checkpoint/2022-04-18 09:10:19.496511/result/label.csv'
+source_label = './automatic_labelling_result/v2_output:9_f4_transport_spmt_model_Custom_CNN_forimage_v2_checkpoint/2022-04-17 16:34:36.396432/result/label.csv'
+train_label_key = 'gt'
+
+# test_label = 'data/test/testlabels/Scherule_testlabels.txt'
 # test_label = 'data/test/testlabels/Kamag_testlabels.txt'
+
 os.makedirs(save_dir, exist_ok=True)
 save_dir = os.path.join(save_dir, vehicle_name)
 os.makedirs(save_dir, exist_ok=True)
@@ -43,16 +57,13 @@ timestamp = str(datetime.datetime.now())
 save_dir = os.path.join(save_dir, timestamp)
 os.makedirs(save_dir, exist_ok=True)
 
-with open(train_label, 'r') as f:
+with open(source_label, 'r') as f:
     label_reader = csv.DictReader(f)
-    train_label_list = list(label_reader)
+    source_label_list = list(label_reader)
 
-test_label_list = []
-with open (test_label, 'r') as f:
-    for line in f.readlines():
-        image_path, _, _, gt = line.split()
-        test_label_list.append({'image_path': image_path, 'gt': gt})
-
+train_label_list = [x for x in source_label_list if os.path.basename(x['image_path']) in train_images]
+test_label_list = [x for x in source_label_list if os.path.basename(x['image_path']) in test_images]
+    
 
 if test_model_list:
     test_load_cnn_models(model_list)

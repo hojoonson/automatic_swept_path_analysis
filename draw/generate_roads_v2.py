@@ -16,7 +16,7 @@ parameter = {
     'curve_line_points': [],
     'thickness': [],
     'angle_list': [0.75 * math.pi * i / angle_num for i in range(1, angle_num)], # 0 < angle < 0.75 pi
-    'thickness_list': [120, 122, 124, 126, 128, 130],
+    'thickness_list': [111, 114, 117, 120],
     'length_list': [150, 200, 250],
     'corner_num_list': [1, 2],
     'map_size': 600
