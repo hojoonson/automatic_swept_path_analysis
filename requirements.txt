@@ -2,3 +2,6 @@ pygame==2.0.3
 opencv-python==4.5.5.62
 sklearn==0.0
 scikit-image==0.19.2
+matplotlib
+seaborn
+tqdm
