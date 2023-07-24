@@ -3,3 +3,5 @@
 ./sample_data/train102.png 295.5 600
 ./sample_data/train102_1.png 295.5 600
 ./sample_data/train109.png 295.5 600
+./sample_data/train109.png 295.5 600
+./sample_data/sample.png 295.5 600
