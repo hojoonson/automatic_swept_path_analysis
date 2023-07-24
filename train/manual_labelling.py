@@ -18,10 +18,10 @@ logger = logging.getLogger()
 
 class Game:
     def __init__(self):
-        # label_path=os.path.join('sample_data','before_manual_labelling.txt')
-        label_path = 'generation_result/2022-03-21_22:56:30.392145/label_before_manual_labelling.txt'
+        label_path=os.path.join('sample_data','before_manual_labelling.txt')
+        # label_path = 'generation_result/2022-03-21_22:56:30.392145/label_before_manual_labelling.txt'
         self.start_idx = 0
-        self.vehicle_name='Type_3'
+        self.vehicle_name='v2'
         self.vehicle_type='spmt'
         self.now_time=str(datetime.datetime.now()).replace(':', '-')
         save_path=os.path.join(os.path.dirname(label_path),'manual_labelling_result')
@@ -39,7 +39,6 @@ class Game:
                 })
         self.max_episode_count = len(path_list)
         self.roadimage_path=sorted(path_list, key=itemgetter('image_path'))
-        
         self.util=utility()
         self.random_candidate=2
         self.map_updatecount=1
@@ -61,10 +60,12 @@ class Game:
         vehicle = Vehicle(x=self.startx,y=self.starty,angle=self.startangle,vehicle_type=self.vehicle_type, vehicle_name=self.vehicle_name)
         red = (255, 0, 0)
         gray = (100,100,100)
+        green = (0,255,0)
         car_image = pygame.Surface((vehicle.carwidth,vehicle.carlength),pygame.SRCALPHA)
         car_image.fill(red)
         stack_image = pygame.Surface((vehicle.carwidth,vehicle.carlength),pygame.SRCALPHA)
         stack_image.fill(gray)
+        crop_image = pygame.Surface((300,300),pygame.SRCALPHA)
         ppu = 1   
 
         # store the previous observations in replay memory
@@ -271,13 +272,17 @@ class Game:
                 element = [pygame.transform.rotate(stack_image,vehicle.angle),vehicle.position,vehicle.angle]
                 road_image.blit(element[0], element[1] * ppu - (element[0].get_rect().width / 2, element[0].get_rect().height / 2))
                 
+                # Drawing Cropline
+                pygame.draw.rect(crop_image, green, pygame.Rect((0,0,300,300)), 5)
+                crop_rotated = pygame.transform.rotate(crop_image, vehicle.angle)
+                self.screen.blit(crop_rotated, vehicle.position * ppu - (crop_rotated.get_rect().width / 2, crop_rotated.get_rect().height / 2)) 
+
                 '''writing episode'''
                 fontObj = pygame.font.Font('./font/times-new-roman.ttf', 30)
                 textSurfaceObj = fontObj.render('Episode '+str(episode), True, (255,255,255), (0,0,0))
                 textRectObj = textSurfaceObj.get_rect()
                 textRectObj.center = (100,30)
-                self.screen.blit(textSurfaceObj, textRectObj) 
-
+                self.screen.blit(textSurfaceObj, textRectObj)
                 self.screen.blit(rotated, vehicle.position * ppu - (rect.width / 2, rect.height / 2)) 
                 pygame.display.flip()
                 global_step+=1
