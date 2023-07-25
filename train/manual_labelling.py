@@ -61,6 +61,7 @@ class Game:
         red = (255, 0, 0)
         gray = (100,100,100)
         green = (0,255,0)
+        skyblue = (64,224,208)
         car_image = pygame.Surface((vehicle.carwidth,vehicle.carlength),pygame.SRCALPHA)
         car_image.fill(red)
         stack_image = pygame.Surface((vehicle.carwidth,vehicle.carlength),pygame.SRCALPHA)
@@ -273,7 +274,7 @@ class Game:
                 road_image.blit(element[0], element[1] * ppu - (element[0].get_rect().width / 2, element[0].get_rect().height / 2))
                 
                 # Drawing Cropline
-                pygame.draw.rect(crop_image, green, pygame.Rect((0,0,300,300)), 5)
+                pygame.draw.rect(crop_image, skyblue, pygame.Rect((0,0,300,300)), 10)
                 crop_rotated = pygame.transform.rotate(crop_image, vehicle.angle)
                 self.screen.blit(crop_rotated, vehicle.position * ppu - (crop_rotated.get_rect().width / 2, crop_rotated.get_rect().height / 2)) 
 
@@ -283,6 +284,7 @@ class Game:
                 textRectObj = textSurfaceObj.get_rect()
                 textRectObj.center = (100,30)
                 self.screen.blit(textSurfaceObj, textRectObj)
+
                 self.screen.blit(rotated, vehicle.position * ppu - (rect.width / 2, rect.height / 2)) 
                 pygame.display.flip()
                 global_step+=1
