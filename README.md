@@ -1,4 +1,16 @@
 # Auto-Simulation for Swept Path Analysis
+## Cite the paper
+This work has been published in IEEE Transactions on Intelligent Transportation Systems.
+https://ieeexplore.ieee.org/abstract/document/10359450
+```
+@article{son2023feasibility,
+  title={Feasibility Evaluation of Oversize Load Transportation Using Conditional Rewarded Deep Q-Networks},
+  author={Son, Hojoon and Kim, Jongkyu and Jung, Hyunjin and Lee, Minsu and Lee, Soo-Hong},
+  journal={IEEE Transactions on Intelligent Transportation Systems},
+  year={2023},
+  publisher={IEEE}
+}
+```
 
 ### 1. Docker build with shell script file 
 
