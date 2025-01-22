@@ -32,7 +32,7 @@ cd train
 python automatic_labelling.py
 ```
 
-# How to generate roads
+# How to generate road segment data
 
 ### 1. Create json file that contains road shape parameters.
 
@@ -52,7 +52,7 @@ You can load original image and marked image.
 <img src="./images/marked.png" width=300 height=300></img>
 
 
-# How to use Manual Labelling Mode
+# How to use a manual labelling mode
 
 ### 1. Execute python code.
 
