@@ -1,4 +1,4 @@
-# automatic_swept_path_analysis
+# Auto-Simulation for Swept Path Analysis
 
 ### 1. Docker build with shell script file 
 
