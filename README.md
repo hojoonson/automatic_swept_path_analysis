@@ -1,5 +1,4 @@
-# Auto-Simulation for Swept Path Analysis
-## Cite the paper
+# Cite the paper
 This work has been published in IEEE Transactions on Intelligent Transportation Systems.
 https://ieeexplore.ieee.org/abstract/document/10359450
 ```
@@ -11,6 +10,8 @@ https://ieeexplore.ieee.org/abstract/document/10359450
   publisher={IEEE}
 }
 ```
+
+# Auto-Simulation for Swept Path Analysis
 
 ### 1. Docker build with shell script file 
 
