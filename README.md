@@ -52,7 +52,7 @@ You can load original image and marked image.
 <img src="./images/marked.png" width=300 height=300></img>
 
 
-# How to use Manual Labelling
+# How to use Manual Labelling Mode
 
 ### 1. Execute python code.
 
