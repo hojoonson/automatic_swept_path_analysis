@@ -1,7 +1,8 @@
 # Cite the paper
-This work has been published in IEEE Transactions on Intelligent Transportation Systems.
+This work has been published in IEEE Transactions on Intelligent Transportation Systems. (https://ieeexplore.ieee.org/abstract/document/10359450)
+
 Title: "Feasibility Evaluation of Oversize Load Transportation Using Conditional Rewarded Deep Q-Networks"
-https://ieeexplore.ieee.org/abstract/document/10359450
+
 ```
 @article{son2023feasibility,
   title={Feasibility Evaluation of Oversize Load Transportation Using Conditional Rewarded Deep Q-Networks},
