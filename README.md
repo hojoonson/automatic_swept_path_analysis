@@ -13,6 +13,9 @@ Title: "Feasibility Evaluation of Oversize Load Transportation Using Conditional
 }
 ```
 
+<img src="./images/dqn_struct_final.jpg" width=966 height=426></img>
+
+
 # Auto-Simulation for Swept Path Analysis
 
 ### 1. Docker build with shell script file 
