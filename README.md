@@ -13,7 +13,7 @@ Title: "Feasibility Evaluation of Oversize Load Transportation Using Conditional
 }
 ```
 
-<img src="./images/dqn_struct_final.jpg" width=966 height=426></img>
+<img src="./images/dqn_struct_final.jpg" width=1932></img>
 
 
 # Auto-Simulation for Swept Path Analysis
