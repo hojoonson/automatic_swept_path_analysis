@@ -34,6 +34,18 @@ cd train
 python automatic_labelling.py
 ```
 
+# Binary Classification for Transportation Feasibility
+
+```
+cd train
+```
+
+Train & Test the classifier
+```
+python cnn_train.py
+```
+
+
 # How to generate road segment data
 
 ### 1. Create json file that contains road shape parameters.
