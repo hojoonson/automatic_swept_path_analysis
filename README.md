@@ -1,3 +1,5 @@
+<img src="./images/dqn_struct_final.jpg" width=1932></img>
+
 # Cite the paper
 This work has been published in IEEE Transactions on Intelligent Transportation Systems. (https://ieeexplore.ieee.org/abstract/document/10359450)
 
@@ -12,9 +14,6 @@ Title: "Feasibility Evaluation of Oversize Load Transportation Using Conditional
   publisher={IEEE}
 }
 ```
-
-<img src="./images/dqn_struct_final.jpg" width=1932></img>
-
 
 # Auto-Simulation for Swept Path Analysis
 
